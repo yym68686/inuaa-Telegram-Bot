@@ -249,7 +249,7 @@ def sign(user):
                 return True
             else:
                 print('打卡失败，尝试重新登陆')
-                user['cookie'] = login(studentid, password)
+                user['cookie'] = login(user['studentid'], user['password'])
         except Exception as e:
             print('尝试失败')
             print(e)
@@ -276,6 +276,8 @@ def startinuaa(studentid, password):
     # for user in users:
         # print('Login...:', user['name'])
     user = {}
+    user['studentid'] = studentid
+    user['password'] = password
     if (studentid != '' and password != ''):
         user['cookie'], user['uid'], user['id'] = login(studentid, password)
         if sign(user):
