@@ -26,6 +26,9 @@ def echo(update, context):
 def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
+def unknown(update: Update, context: CallbackContext):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
+
 def caps(update: Update, context: CallbackContext):
     text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
@@ -53,7 +56,8 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("caps", caps))
     # dispatcher.add_handler(CommandHandler('clear', clear))
 
-    dispatcher.add_handler(MessageHandler(Filters.text, echo))
+    # dispatcher.add_handler(MessageHandler(Filters.text, echo))
+    dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     dispatcher.add_error_handler(error)
 
     if MODE == "dev":
