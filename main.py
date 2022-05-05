@@ -1,9 +1,7 @@
 import os
 import sys
-# import json
-# import asyncio
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 
 TOKEN = os.getenv("TOKEN")
@@ -11,7 +9,6 @@ MODE = os.getenv("MODE")
 DATA_FILE_NAME = 'data.json'
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
-# WHITE_LIST = os.getenv("WHITE_LIST")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
@@ -20,7 +17,7 @@ def start(update, context):
     update.message.reply_text('欢迎使用 🎉')
 
 def help(update, context):
-    update.message.reply_text('Help!')
+    update.message.reply_text('我是人见人爱的yym的小跟班~')
 
 def echo(update, context):
     update.message.reply_text(update.message.text)
@@ -44,7 +41,6 @@ if __name__ == '__main__':
 
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
-    # dispatcher.add_handler(CallbackQueryHandler(subscriptionCallback))
 
     dispatcher.add_handler(MessageHandler(Filters.text, echo))
     dispatcher.add_error_handler(error)
@@ -55,5 +51,4 @@ if __name__ == '__main__':
         updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
         updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
 
-    # updater.start_polling()
     updater.idle()
