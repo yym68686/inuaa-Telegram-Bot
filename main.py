@@ -9,6 +9,8 @@ MODE = os.getenv("MODE")
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 WHITE_LIST = os.getenv("WHITE_LIST")
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
 def start(update, context):
