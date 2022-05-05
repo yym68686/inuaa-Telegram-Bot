@@ -1,10 +1,10 @@
 import os
 import sys
 import logging
-from tgbot.nuaa import startinuaa 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from tgbot.nuaa import startinuaa
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-
 
 TOKEN = os.getenv("TOKEN")
 MODE = os.getenv("MODE")
@@ -34,9 +34,9 @@ def caps(update: Update, context: CallbackContext):
     text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
-# def inuaa(update: Update, context: CallbackContext):
-#     result = startinuaa(context.args[0], context.args[1])
-#     context.bot.send_message(chat_id=update.effective_chat.id, text=result)
+def inuaa(update: Update, context: CallbackContext):
+    result = startinuaa(context.args[0], context.args[1])
+    context.bot.send_message(chat_id=update.effective_chat.id, text=result)
 
 if __name__ == '__main__':
     if MODE == "dev":
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("caps", caps))
-    # dispatcher.add_handler(CommandHandler("inuaa", inuaa))
+    dispatcher.add_handler(CommandHandler("inuaa", inuaa))
 
     # dispatcher.add_handler(MessageHandler(Filters.text, echo))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
