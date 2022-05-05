@@ -32,11 +32,11 @@ def unknown(update: Update, context: CallbackContext):
 def caps(update: Update, context: CallbackContext):
     text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
-# def clear(update: Update, context: CallbackContext) -> None:
-#     """Clears the callback data cache"""
-#     context.bot.callback_data_cache.clear_callback_data()  # type: ignore[attr-defined]
-#     context.bot.callback_data_cache.clear_callback_queries()  # type: ignore[attr-defined]
-#     update.effective_message.reply_text('All clear!')
+
+def inuaa(update: Update, context: CallbackContext):
+    # text_caps = ' '.join(context.args).upper()
+    context.bot.send_message(chat_id=update.effective_chat.id, text=context.args[0])
+    context.bot.send_message(chat_id=update.effective_chat.id, text=context.args[1])
 
 if __name__ == '__main__':
     if MODE == "dev":
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("caps", caps))
-    # dispatcher.add_handler(CommandHandler('clear', clear))
+    dispatcher.add_handler(CommandHandler("inuaa", inuaa))
 
     # dispatcher.add_handler(MessageHandler(Filters.text, echo))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
