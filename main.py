@@ -35,8 +35,12 @@ def caps(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
 def inuaa(update: Update, context: CallbackContext):
-    result = startinuaa(context.args[0], context.args[1])
-    context.bot.send_message(chat_id=update.effective_chat.id, text=result)
+    if (context.args[1] == '' or context.args[2] == ''):
+        result = startinuaa(context.args[0], context.args[1])
+        context.bot.send_message(chat_id=update.effective_chat.id, text=result)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /inuaa [学号] [教务处密码]")
+        
 
 if __name__ == '__main__':
     if MODE == "dev":
