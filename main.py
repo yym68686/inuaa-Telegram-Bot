@@ -91,7 +91,6 @@ if __name__ == '__main__':
     dispatcher.add_handler(CallbackQueryHandler(subscriptionCallback))
 
     dispatcher.add_handler(MessageHandler(Filters.text, echo))
-
     dispatcher.add_error_handler(error)
 
     if MODE == "dev":
