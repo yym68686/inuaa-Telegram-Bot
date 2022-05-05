@@ -2,10 +2,10 @@
 
 import requests
 import time
-import json
+# import json
+import sys
 import re
-import json
-from send_mail import send_mail
+# from send_mail import send_mail
 
 
 # 如果发包过快会造成502，如果给多个同学打卡请注意一下请求速度
@@ -163,7 +163,7 @@ def login(login_id, login_password):
     return ''
 
 
-def sign(m, d, user, smtp_host, mail_username, mail_password):
+def sign(user):
 
     '''
     签到，并且发送邮件提醒，成功返回True，失败返回False
@@ -237,97 +237,100 @@ def sign(m, d, user, smtp_host, mail_username, mail_password):
                 'cjfxsfhs': '1',
             }
             time.sleep(delay)
-            r = requests.post('https://m.nuaa.edu.cn/ncov/wap/default/save',
-                              data=data, cookies=user['cookie'])
+            r = requests.post('https://m.nuaa.edu.cn/ncov/wap/default/save', data=data, cookies=user['cookie'])
             print('sign statue code:', r.status_code)
             print('sign return:', r.text)
             r.encoding = 'utf-8'
             
             if r.text.find('成功') >= 0:
                 print('打卡成功')
-                if user['receiver_mail'] != '':
-                    send_mail(mail_username, mail_password, smtp_host,
-                              user['receiver_mail'], user['name']+'校外打卡成功', '校外打卡成功', user['name'], '老王')
+                # if user['receiver_mail'] != '':
+                #     send_mail(mail_username, mail_password, smtp_host, user['receiver_mail'], user['name']+'校外打卡成功', '校外打卡成功', user['name'], '老王')
                 return True
             else:
                 print('打卡失败，尝试重新登陆')
-                user['cookie'] = login(user['student_id'], user['student_password'])
+                user['cookie'] = login(sys.argv[1], sys.argv[2])
         except Exception as e:
             print('尝试失败')
             print(e)
             pass
             # print(r.request.body)
-    if user['receiver_mail'] != '':
-        send_mail(mail_username, mail_password, smtp_host,
-                  user['receiver_mail'], user['name']+'校外打卡GG', '校外打卡GG', user['name'], '老王')
+    # if user['receiver_mail'] != '':
+    #     send_mail(mail_username, mail_password, smtp_host, user['receiver_mail'], user['name']+'校外打卡GG', '校外打卡GG', user['name'], '老王')
     return False
 
 
-def main():
-    print('------>>>---->启动中<------<<<----')
-    last_post = 10086   # 最后一次签到的日期
-    
+def startinuaa():
+    # print('------>>>---->启动中<------<<<----')
+    # last_post = 10086   # 最后一次签到的日期
+
     # 读取配置文件
-    with open('config.json', 'r',encoding='UTF-8') as f:
-        config = json.loads(f.read())
-    smtp_host = config['smtp_host']
-    mail_password = config['mail_password']
-    mail_username = config['mail_username']
-    users = config['users']
-    
+    # with open('config.json', 'r',encoding='UTF-8') as f:
+        # config = json.loads(f.read())
+    # smtp_host = config['smtp_host']
+    # mail_password = config['mail_password']
+    # mail_username = config['mail_username']
+    # users = config['users']
+
     # 一起登陆啊，失败了就先空着，等打卡时候再来管他
-    for user in users:
-        print('Login...:', user['name'])
-        user['cookie'], user['uid'], user['id'] = login(user['student_id'], user['student_password'])
-    
+    # for user in users:
+        # print('Login...:', user['name'])
+    user = {}
+    if (sys.argv[1] != '' and sys.argv[2] != ''):
+        user['cookie'], user['uid'], user['id'] = login(sys.argv[1], sys.argv[2])
+    if sign(user):
+        return "打卡成功！"
+    else:
+        return "打卡失败！"
+        # print('{}邮箱 {}月{}日登陆失败!'.format(user['name'], t.tm_mon, t.tm_mday))
    
 
     
-    # 每一天先拷贝一下需要打卡的列表，然后打卡
-    # 其他时间如果监测到待打卡的列表非空，就重新读打卡
+    # # 每一天先拷贝一下需要打卡的列表，然后打卡
+    # # 其他时间如果监测到待打卡的列表非空，就重新读打卡
     
-    while True:
-        t = time.localtime()
+    # while True:
+    #     t = time.localtime()
 
-        if t.tm_mday != last_post:
-            # 新的一天，拷贝一份完整的打卡清单，全部打一遍卡。但是这样做的话每次更新cookie，users也自动更新。
+    #     if t.tm_mday != last_post:
+    #         # 新的一天，拷贝一份完整的打卡清单，全部打一遍卡。但是这样做的话每次更新cookie，users也自动更新。
 
-            print('----------开始每日打卡----------')
-            to_sign_list = users.copy()
+    #         print('----------开始每日打卡----------')
+    #         to_sign_list = users.copy()
 
-            # 给每个人打卡
-            new_list = []   # 未完成打卡的暂时放这里
-            for user in to_sign_list[:]:
-                print('**********' + user['name'] + '**********')
-                if sign(t.tm_mon, t.tm_mday, user, smtp_host, mail_username, mail_password):
-                    print('{}邮箱 {}月{}日登陆成功!'.format(
-                        user['name'], t.tm_mon, t.tm_mday))
-                else:
-                    print('{}邮箱 {}月{}日登陆失败!'.format(
-                        user['name'], t.tm_mon, t.tm_mday))
-                    new_list.append(user)
-            to_sign_list = new_list
-            last_post = t.tm_mday   # 更新日期
+    #         # 给每个人打卡
+    #         new_list = []   # 未完成打卡的暂时放这里
+    #         for user in to_sign_list[:]:
+    #             print('**********' + user['name'] + '**********')
+    #             if sign(t.tm_mon, t.tm_mday, user, smtp_host, mail_username, mail_password):
+    #                 print('{}邮箱 {}月{}日登陆成功!'.format(
+    #                     user['name'], t.tm_mon, t.tm_mday))
+    #             else:
+    #                 print('{}邮箱 {}月{}日登陆失败!'.format(
+    #                     user['name'], t.tm_mon, t.tm_mday))
+    #                 new_list.append(user)
+    #         to_sign_list = new_list
+    #         last_post = t.tm_mday   # 更新日期
 
-        elif len(to_sign_list) != 0:
-            # 一天中的后续尝试，先等待2小时，然后再打卡
-            time.sleep(3600)    # 失败用户每一个小时重试一次
+    #     elif len(to_sign_list) != 0:
+    #         # 一天中的后续尝试，先等待2小时，然后再打卡
+    #         time.sleep(3600)    # 失败用户每一个小时重试一次
         
-            print('----------重新打卡尝试----------')
-            # 给每个失败的人打卡
-            new_list = []   # 未完成打卡的暂时放这里
-            for user in to_sign_list[:]:
-                print('**********' + user['name'] + '**********')
-                if sign(t.tm_mon, t.tm_mday, user, smtp_host, mail_username, mail_password):
-                    print('{}邮箱 {}月{}日登陆成功!'.format(
-                        user['name'], t.tm_mon, t.tm_mday))
-                else:
-                    print('{}邮箱 {}月{}日登陆失败!'.format(
-                        user['name'], t.tm_mon, t.tm_mday))
-                    new_list.append(user)
-            to_sign_list = new_list
-        # else: 都打完了
-        time.sleep(2)
+    #         print('----------重新打卡尝试----------')
+    #         # 给每个失败的人打卡
+    #         new_list = []   # 未完成打卡的暂时放这里
+    #         for user in to_sign_list[:]:
+    #             print('**********' + user['name'] + '**********')
+    #             if sign(t.tm_mon, t.tm_mday, user, smtp_host, mail_username, mail_password):
+    #                 print('{}邮箱 {}月{}日登陆成功!'.format(
+    #                     user['name'], t.tm_mon, t.tm_mday))
+    #             else:
+    #                 print('{}邮箱 {}月{}日登陆失败!'.format(
+    #                     user['name'], t.tm_mon, t.tm_mday))
+    #                 new_list.append(user)
+    #         to_sign_list = new_list
+    #     # else: 都打完了
+    #     time.sleep(2)
 
 if __name__ == '__main__':
-    main()
+    startinuaa()

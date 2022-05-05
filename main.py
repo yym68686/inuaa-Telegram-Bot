@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+from tgbot.nuaa import startinuaa 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
@@ -34,8 +35,9 @@ def caps(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
 def inuaa(update: Update, context: CallbackContext):
-    context.bot.send_message(chat_id=update.effective_chat.id, text=context.args[0])
-    context.bot.send_message(chat_id=update.effective_chat.id, text=context.args[1])
+    # context.bot.send_message(chat_id=update.effective_chat.id, text=context.args[1])
+    result = startinuaa(context.args[0], context.args[1])
+    context.bot.send_message(chat_id=update.effective_chat.id, text=result)
 
 if __name__ == '__main__':
     if MODE == "dev":
