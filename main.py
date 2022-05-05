@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
@@ -23,9 +24,15 @@ def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 if __name__ == '__main__':
-    updater = Updater(TOKEN, use_context=True, request_kwargs={
-        'proxy_url': 'HTTPS://127.0.0.1:7890/'
-    })
+    if MODE == "dev":
+        updater = Updater(TOKEN, use_context=True, request_kwargs={
+            'proxy_url': 'socks5h://127.0.0.1:7890' # 如果你需要翻墙才能使用 telegram 需要设置 vpn 软件中使用的代理设置
+        })
+    elif MODE == "prod":
+        updater = Updater(TOKEN, use_context=True)
+    else:
+        logger.error("需要设置 MODE!")
+        sys.exit(1)
 
     dispatcher = updater.dispatcher
 
