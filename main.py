@@ -4,6 +4,7 @@ import json
 import asyncio
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, Filters
+
 TOKEN = os.getenv("TOKEN")
 DATA_FILE_NAME = 'data.json'
 MODE = os.getenv("MODE")
