@@ -1,7 +1,8 @@
 import os
 import sys
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 
 TOKEN = os.getenv("TOKEN")
@@ -25,6 +26,11 @@ def echo(update, context):
 def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
+def clear(update: Update, context: CallbackContext) -> None:
+    """Clears the callback data cache"""
+    context.bot.callback_data_cache.clear_callback_data()  # type: ignore[attr-defined]
+    context.bot.callback_data_cache.clear_callback_queries()  # type: ignore[attr-defined]
+    update.effective_message.reply_text('All clear!')
 
 if __name__ == '__main__':
     if MODE == "dev":
