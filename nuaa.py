@@ -249,7 +249,7 @@ def sign(user):
                 return True
             else:
                 print('打卡失败，尝试重新登陆')
-                user['cookie'] = login(sys.argv[1], sys.argv[2])
+                user['cookie'] = login(studentid, password)
         except Exception as e:
             print('尝试失败')
             print(e)
@@ -260,7 +260,7 @@ def sign(user):
     return False
 
 
-def startinuaa():
+def startinuaa(studentid, password):
     # print('------>>>---->启动中<------<<<----')
     # last_post = 10086   # 最后一次签到的日期
 
@@ -276,12 +276,14 @@ def startinuaa():
     # for user in users:
         # print('Login...:', user['name'])
     user = {}
-    if (sys.argv[1] != '' and sys.argv[2] != ''):
-        user['cookie'], user['uid'], user['id'] = login(sys.argv[1], sys.argv[2])
-    if sign(user):
-        return "打卡成功！"
-    else:
-        return "打卡失败！"
+    if (studentid != '' and password != ''):
+        user['cookie'], user['uid'], user['id'] = login(studentid, password)
+        if sign(user):
+            return "打卡成功！"
+        else:
+            return "打卡失败！"
+    else
+        return "输入格式错误！"
         # print('{}邮箱 {}月{}日登陆失败!'.format(user['name'], t.tm_mon, t.tm_mday))
    
 
@@ -333,4 +335,4 @@ def startinuaa():
     #     time.sleep(2)
 
 if __name__ == '__main__':
-    startinuaa()
+    startinuaa(sys.argv[1], sys.argv[2])
