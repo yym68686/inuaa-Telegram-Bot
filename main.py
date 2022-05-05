@@ -3,6 +3,11 @@ import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 TOKEN = os.getenv("TOKEN")
+DATA_FILE_NAME = 'data.json'
+MODE = os.getenv("MODE")
+PORT = int(os.environ.get('PORT', '8443'))
+HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
+WHITE_LIST = os.getenv("WHITE_LIST")
 logger = logging.getLogger()
 
 def start(update, context):
@@ -31,5 +36,11 @@ if __name__ == '__main__':
 
     dispatcher.add_error_handler(error)
 
-    updater.start_polling()
+    if MODE == "dev":
+        updater.start_polling()
+    elif MODE == "prod":
+        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+        updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
+
+    # updater.start_polling()
     updater.idle()
