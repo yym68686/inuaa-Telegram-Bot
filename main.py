@@ -1,13 +1,14 @@
 import os
 import sys
-import json
-import asyncio
+# import json
+# import asyncio
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, Filters
 
+
 TOKEN = os.getenv("TOKEN")
-DATA_FILE_NAME = 'data.json'
 MODE = os.getenv("MODE")
+DATA_FILE_NAME = 'data.json'
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 # WHITE_LIST = os.getenv("WHITE_LIST")
@@ -31,7 +32,7 @@ def error(update, context):
 if __name__ == '__main__':
     if MODE == "dev":
         updater = Updater(TOKEN, use_context=True, request_kwargs={
-            'proxy_url': 'socks5h://127.0.0.1:7890' # 如果你需要翻墙才能使用 telegram 需要设置 vpn 软件中使用的代理设置
+            'proxy_url': 'https://127.0.0.1:7890' # 如果你需要翻墙才能使用 telegram 需要设置 vpn 软件中使用的代理设置
         })
     elif MODE == "prod":
         updater = Updater(TOKEN, use_context=True)
