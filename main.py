@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from tgbot.nuaa import startinuaa
+from nuaa import startinuaa
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
