@@ -1,5 +1,7 @@
 import os
 import sys
+import json
+import asyncio
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, Filters
 TOKEN = os.getenv("TOKEN")
@@ -12,6 +14,27 @@ WHITE_LIST = os.getenv("WHITE_LIST")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
+def readFile(file):
+    try:
+        with open(file, 'r') as handle:
+            data = json.load(handle)
+            handle.close()
+
+            if data:
+                return data
+            else:
+                return {}
+    except FileNotFoundError:
+        file = open(DATA_FILE_NAME, 'w')
+        file.close()
+        return {}
+
+async def writeToFile(file, dict):
+    with open(file, 'w') as handle: # w 表示每次写时覆盖原内容
+        json.dump(dict, handle)
+        handle.write("\n")
+        handle.close()
+
 def start(update, context):
     update.message.reply_text('欢迎使用 🎉')
 
@@ -23,6 +46,31 @@ def echo(update, context):
 
 def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
+
+# 用户会对应一些业务，每个业务对应该用户的选择
+def subscriptionCallback(update, context):
+    query = update.callback_query
+    query.edit_message_text(text="订阅成功 🎉")
+
+    chatId = str(query.message.chat.id)
+
+    data = readFile(DATA_FILE_NAME)
+
+    if chatId in data.keys():
+        userData = data[chatId]
+
+        if 'subscription' in userData:
+            userSubscription = userData['subscription']
+
+            if query.data not in userSubscription:
+                userSubscription.append(query.data)
+                data[chatId]['subscription'] = userSubscription
+        else:
+            data[chatId].append({'subscription': [query.data]})
+    else:
+        data[chatId] = {'subscription': [query.data]}
+
+    asyncio.run(writeToFile(DATA_FILE_NAME, data))
 
 if __name__ == '__main__':
     if MODE == "dev":
@@ -39,6 +87,7 @@ if __name__ == '__main__':
 
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
+    dispatcher.add_handler(CallbackQueryHandler(subscriptionCallback))
 
     dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
