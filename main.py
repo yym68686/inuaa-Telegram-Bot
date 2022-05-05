@@ -36,6 +36,7 @@ def caps(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
 def inuaa(update: Update, context: CallbackContext):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
     if (len(context.args) == 2):
         result = startinuaa(context.args[0], context.args[1])
         context.bot.send_message(chat_id=update.effective_chat.id, text=result)
