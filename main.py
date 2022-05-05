@@ -1,8 +1,6 @@
 import os
-from pickle import NONE
 import sys
 import logging
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from nuaa import startinuaa
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
@@ -42,7 +40,7 @@ def inuaa(update: Update, context: CallbackContext):
         context.bot.send_message(chat_id=update.effective_chat.id, text=result)
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /inuaa [学号] [教务处密码]")
-        
+
 
 if __name__ == '__main__':
     if MODE == "dev":
@@ -62,7 +60,6 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("caps", caps))
     dispatcher.add_handler(CommandHandler("inuaa", inuaa))
 
-    # dispatcher.add_handler(MessageHandler(Filters.text, echo))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     dispatcher.add_error_handler(error)
 
