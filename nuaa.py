@@ -147,7 +147,8 @@ def login(login_id, login_password):
             time.sleep(delay)
             r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
             print('login...:', r.status_code)
-            print(r.text)
+            if ("账户或密码错误" in r.text):
+                return "账户或密码错误", '', ''
             cookies.update(dict(r.cookies))
 
             # headers['Cookie'] = cookie
@@ -278,6 +279,8 @@ def startinuaa(studentid, password):
     user['password'] = password
     if (studentid != '' and password != ''):
         user['cookie'], user['uid'], user['id'] = login(studentid, password)
+        if ("账户或密码错误" in user['cookie']):
+                return "账户或密码错误"
         if sign(user):
             return "打卡成功！"
         else:
