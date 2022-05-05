@@ -34,7 +34,6 @@ def caps(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
 def inuaa(update: Update, context: CallbackContext):
-    # text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=context.args[0])
     context.bot.send_message(chat_id=update.effective_chat.id, text=context.args[1])
 
