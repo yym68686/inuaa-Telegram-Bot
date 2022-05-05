@@ -282,7 +282,7 @@ def startinuaa(studentid, password):
             return "打卡成功！"
         else:
             return "打卡失败！"
-    else
+    else:
         return "输入格式错误！"
         # print('{}邮箱 {}月{}日登陆失败!'.format(user['name'], t.tm_mon, t.tm_mday))
    
