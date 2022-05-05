@@ -1,4 +1,5 @@
 import os
+from pickle import NONE
 import sys
 import logging
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -35,6 +36,7 @@ def caps(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
 def inuaa(update: Update, context: CallbackContext):
+    print(context.args == NONE)
     if (context.args[1] == '' or context.args[2] == ''):
         result = startinuaa(context.args[0], context.args[1])
         context.bot.send_message(chat_id=update.effective_chat.id, text=result)
