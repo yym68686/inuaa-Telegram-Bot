@@ -280,7 +280,7 @@ def startinuaa(studentid, password):
     if (studentid != '' and password != ''):
         user['cookie'], user['uid'], user['id'] = login(studentid, password)
         if ("账户或密码错误" in user['cookie']):
-                return "账户或密码错误"
+                return "账户或密码错误，呜呜呜。"
         if sign(user):
             return "打卡成功！"
         else:
