@@ -145,11 +145,9 @@ def login(login_id, login_password):
 
 
             time.sleep(delay)
-            r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies,
-                             data='username={}&password={}'.format(login_id, login_password))
+            r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
             print('login...:', r.status_code)
 
-        
             cookies.update(dict(r.cookies))
 
             # headers['Cookie'] = cookie
@@ -160,7 +158,7 @@ def login(login_id, login_password):
             print('login failed.')
             pass
     # raise Exception('lOGIN FAIL')
-    return ''
+    return '', '', ''
 
 
 def sign(user):
