@@ -147,7 +147,7 @@ def login(login_id, login_password):
             time.sleep(delay)
             r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
             print('login...:', r.status_code)
-
+            print(r.text)
             cookies.update(dict(r.cookies))
 
             # headers['Cookie'] = cookie
