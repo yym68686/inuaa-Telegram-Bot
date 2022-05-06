@@ -38,7 +38,7 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /inuaa [学号] [教务处密码]，例如学号为123，密码是123，则输入/inuaa 123 123")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /inuaa <学号> <教务处密码>，例如学号为123，密码是123，则输入/inuaa 123 123")
 
 
 if __name__ == '__main__':
