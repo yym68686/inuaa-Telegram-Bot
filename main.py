@@ -67,7 +67,7 @@ def caps(update: Update, context: CallbackContext): # 小的测试功能，也�
 def check(update: Update, context: CallbackContext): # 添加自动打卡
     if (len(context.args) == 2): # /check 后面必须是两个参数
         message = (
-            f"欢迎使用自动打卡功能~\n"
+            f"欢迎使用自动打卡功能~\n\n"
             f"<pre>将在每日{checktime}打卡</pre>\n\n"
             f"<pre>请稍等哦，正在给您的信息添加到数据库~</pre>\n\n"
         )
@@ -84,7 +84,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
         message = (
-            f"格式错误哦~\n"
+            f"格式错误哦~\n\n"
             f"<pre>请输入 /check 学号 教务处密码</pre>\n\n"
             f"<pre>例如学号为123，密码是123</pre>\n\n"
             f"<pre>则输入 /check 123 123</pre>\n\n"
@@ -111,8 +111,13 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /inuaa <学号> <教务处密码>，例如学号为123，密码是123，则输入/inuaa 123 123")
-
+        message = (
+            f"格式错误哦~\n\n"
+            f"<pre>请输入 /inuaa 学号 教务处密码</pre>\n\n"
+            f"<pre>例如学号为123，密码是123</pre>\n\n"
+            f"<pre>则输入 /inuaa 123 123</pre>\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
 
 if __name__ == '__main__':
     if MODE == "dev": # 本地调试，需要挂代理，这里使用的是Clash
