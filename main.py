@@ -30,7 +30,15 @@ def start(update, context): # 当用户输入/start时，返回文本
     )
 
 def help(update, context):
-    update.message.reply_text('我是人见人爱的yym的小跟班~')
+        message = (
+            f"我是人见人爱的yym的小跟班~\n\n"
+            f"1. 我可以给你在每天 {checktime} 打卡\n\n"
+            f"输入 /check ID password 发给我就行啦\n\n"
+            f"这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
+            f"2. 你也可以手动打卡，记得每天发一句 /inuaa ID password 发给我哦~\n\n"
+            f"这个功能不会存密码\n\n"
+        )
+    update.message.reply_text(message)
 
 def echo(update, context):
     update.message.reply_text(update.message.text)
@@ -68,7 +76,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
     if (len(context.args) == 2): # /check 后面必须是两个参数
         message = (
             f"欢迎使用自动打卡功能~\n\n"
-            f"将在每日<pre>{checktime}</pre>打卡\n\n"
+            f"将在每日{checktime}打卡\n\n"
             f"请稍等哦，正在给您的信息添加到数据库~\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
@@ -86,7 +94,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         message = (
             f"格式错误哦~\n\n"
             f"请输入 <pre>/check 学号 教务处密码</pre>\n\n"
-            f"例如学号为<pre>123</pre>，密码是<pre>123</pre>\n\n"
+            f"例如学号为 123，密码是123\n\n"
             f"则输入 <pre>/check 123 123</pre>\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
@@ -114,7 +122,7 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         message = (
             f"格式错误哦~\n\n"
             f"请输入 <pre>/inuaa 学号 教务处密码</pre>\n\n"
-            f"例如学号为<pre>123</pre>，密码是<pre>123</pre>\n\n"
+            f"例如学号为 123，密码是 123\n\n"
             f"则输入 <pre>/inuaa 123 123</pre>\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
