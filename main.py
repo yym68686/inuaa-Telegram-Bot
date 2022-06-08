@@ -15,6 +15,7 @@ MODE = os.getenv("MODE")
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 DATABASEID = os.getenv("DATABASEID")
+checktime = '18:05'
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
@@ -61,9 +62,9 @@ def caps(update: Update, context: CallbackContext): # 小的测试功能，也�
     text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
-def check(update: Update, context: CallbackContext): # 调加自动打卡
+def check(update: Update, context: CallbackContext): # 添加自动打卡
     if (len(context.args) == 2): # /check 后面必须是两个参数
-        context.bot.send_message(chat_id=update.effective_chat.id, text="欢迎使用自动打卡功能~")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="欢迎使用自动打卡功能~，将在每日{checktime}打卡，请稍等哦，正在给您的信息添加到数据库~")
         body = {
             'properties':{}
         }
@@ -75,7 +76,13 @@ def check(update: Update, context: CallbackContext): # 调加自动打卡
         result = NotionDatabase.DataBase_additem(DATABASEID, body, context.args[0])
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /check <学号> <教务处密码>，例如学号为123，密码是123，则输入/check 123 123\n\n\n")
+        message = (
+            f"格式错误哦~"
+            f"<pre>请输入 /check 学号 教务处密码</pre>\n\n"
+            f"<pre>例如学号为123，密码是123</pre>\n\n"
+            f"<pre>则输入 /check 123 123</pre>\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
 
 def dailysign():
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
@@ -130,7 +137,7 @@ if __name__ == '__main__':
         updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
         updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
 
-    schedule.every().day.at("18:05").do(dailysign)
+    schedule.every().day.at(checktime).do(dailysign)
     Thread(target=schedule_checker).start() 
 
     updater.idle()
