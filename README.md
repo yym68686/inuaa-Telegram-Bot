@@ -4,6 +4,6 @@
 
 轻量级数据库，不考虑性能，直接用Notion的Database做了数据库
 
-上手指南：
+# 上手指南
 
 https://blog.yym68686.top/TelegramBot
