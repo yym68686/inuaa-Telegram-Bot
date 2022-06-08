@@ -1,5 +1,6 @@
 import os
 import sys
+import html
 import time
 import logging
 import schedule
@@ -84,7 +85,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
         message = (
-            f"格式错误哦~"
+            f"格式错误哦~\n"
             f"<pre>请输入 /check 学号 教务处密码</pre>\n\n"
             f"<pre>例如学号为123，密码是123</pre>\n\n"
             f"<pre>则输入 /check 123 123</pre>\n\n"
