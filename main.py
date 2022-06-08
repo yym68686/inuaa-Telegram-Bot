@@ -36,7 +36,7 @@ def help(update, context):
         f"输入 /check ID password 发给我就行啦\n"
         f"这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
         f"2. 你也可以手动打卡，记得每天发一句 /inuaa ID password 发给我哦~\n"
-        f"这个功能不会存密码"
+        f"这个功能不会存密码\n\n"
         f"3. 欢迎访问https://github.com/yym68686/tgbot查看源码"
     )
     update.message.reply_text(message)
