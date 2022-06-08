@@ -30,14 +30,14 @@ def start(update, context): # 当用户输入/start时，返回文本
     )
 
 def help(update, context):
-        message = (
-            f"我是人见人爱的yym的小跟班~\n\n"
-            f"1. 我可以给你在每天 {checktime} 打卡\n\n"
-            f"输入 /check ID password 发给我就行啦\n\n"
-            f"这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
-            f"2. 你也可以手动打卡，记得每天发一句 /inuaa ID password 发给我哦~\n\n"
-            f"这个功能不会存密码\n\n"
-        )
+    message = (
+        f"我是人见人爱的yym的小跟班~\n\n"
+        f"1. 我可以给你在每天 {checktime} 打卡\n\n"
+        f"输入 /check ID password 发给我就行啦\n\n"
+        f"这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
+        f"2. 你也可以手动打卡，记得每天发一句 /inuaa ID password 发给我哦~\n\n"
+        f"这个功能不会存密码\n\n"
+    )
     update.message.reply_text(message)
 
 def echo(update, context):
