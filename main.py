@@ -13,7 +13,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 
 TOKEN = os.getenv("TOKEN") # 从环境变量自动获取telegram bot Token
 MODE = os.getenv("MODE")
-
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 DATABASEID = os.getenv("DATABASEID")
@@ -26,7 +25,7 @@ def start(update, context): # 当用户输入/start时，返回文本
     user = update.effective_user
     update.message.reply_html(
         rf"Hi {user.mention_html()} 欢迎使用 🎉",
-        reply_markup=ForceReply(selective=True),
+        # reply_markup=ForceReply(selective=True),
     )
 
 def help(update, context):
