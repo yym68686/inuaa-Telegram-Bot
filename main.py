@@ -38,7 +38,7 @@ def help(update, context):
         f"2. 你也可以手动打卡，记得每天发一句 /inuaa ID password 发给我哦~\n"
         f"这个功能不会存密码\n\n"
         f"3. 欢迎访问https://github.com/yym68686/tgbot 查看源码\n\n"
-        rf"4. 有 bug 可以联系{"917527833".mention_html()}"
+        "4. 有 bug 可以联系 @yym68686"
     )
     update.message.reply_text(message)
 
