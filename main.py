@@ -75,7 +75,7 @@ def check(update: Update, context: CallbackContext): # 调加自动打卡
         result = NotionDatabase.DataBase_additem(DATABASEID, body, context.args[0])
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /check <学号> <教务处密码>，例如学号为123，密码是123，则输入/inuaa 123 123")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="格式错误哦~，请输入 /check <学号> <教务处密码>，例如学号为123，密码是123，则输入/check 123 123\n\n\n")
 
 def dailysign():
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
