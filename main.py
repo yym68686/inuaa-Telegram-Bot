@@ -67,9 +67,8 @@ def caps(update: Update, context: CallbackContext): # 小的测试功能，也�
 def check(update: Update, context: CallbackContext): # 添加自动打卡
     if (len(context.args) == 2): # /check 后面必须是两个参数
         message = (
-            f"欢迎使用自动打卡功能~"
+            f"欢迎使用自动打卡功能~\n"
             f"<pre>将在每日{checktime}打卡</pre>\n\n"
-            f"<pre>将在每日{html.escape(checktime)}打卡</pre>\n\n"
             f"<pre>请稍等哦，正在给您的信息添加到数据库~</pre>\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
