@@ -88,7 +88,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         }
         body = NotionDatabase.body_properties_input(body, 'StuID', 'title', context.args[0])
         body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', context.args[1])
-        body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', "cookie")
+        body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', "**")
         body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', '1')
         body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(update.effective_chat.id))
         result = NotionDatabase.DataBase_additem(DATABASEID, body, context.args[0])
