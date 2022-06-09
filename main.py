@@ -5,7 +5,7 @@ import time
 import logging
 import schedule
 import NotionDatabase
-from nuaa import startinuaa
+from nuaa import startinuaa, GetCookie
 from threading import Thread
 from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update
@@ -16,7 +16,7 @@ MODE = os.getenv("MODE")
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 DATABASEID = os.getenv("DATABASEID")
-checktime = '18:05'
+checktime = '00:01'
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
@@ -81,12 +81,14 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
             f"请稍等哦，正在给您的信息添加到数据库~\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+        # cookie = GetCookie(context.args[0], context.args[1])
+        # print(cookie)
         body = {
             'properties':{}
         }
         body = NotionDatabase.body_properties_input(body, 'StuID', 'title', context.args[0])
         body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', context.args[1])
-        body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', '**')
+        body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', "cookie")
         body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', '1')
         body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(update.effective_chat.id))
         result = NotionDatabase.DataBase_additem(DATABASEID, body, context.args[0])
@@ -102,8 +104,9 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
 
 def dailysign():
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    seen = set()
-    Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
+    print(Stuinfo)
+    # seen = set()
+    # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
     for item in Stuinfo:
         updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
         result = startinuaa(item['StuID'], item['password']) # 调用打卡程序

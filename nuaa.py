@@ -104,6 +104,26 @@ info: {
 }
 '''
 
+
+def GetCookie(login_id, login_password):
+    '''
+    登陆I南航，返回Cookie，失败返回空串
+    '''
+    cookies = ''
+    for _ in range(try_times):
+        try:
+            time.sleep(delay)
+            r = requests.get('https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
+            time.sleep(delay)
+            r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
+            if ("账户或密码错误" in r.text):
+                return "账户或密码错误", '', ''
+            return cookies
+        except Exception as e:
+            print('login failed.')
+            pass
+    return '**'
+
 def get_uid_id(cookies):
     '''
     获取id与uid
@@ -119,7 +139,7 @@ def get_uid_id(cookies):
 
             uid = re.search(r'"uid":"([0-9]*)"', response.text).group(1)
             id = re.search(r'"id":([0-9]*)', response.text).group(1)
-            print(uid, id)
+            # print(uid, id)
             return uid,id
         except Exception as e:
             print(e)
@@ -138,15 +158,15 @@ def login(login_id, login_password):
             time.sleep(delay)
             r = requests.get(
                 'https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
-            print('get login page:', r.status_code)
+            # print('get login page:', r.status_code)
            
             cookies = dict(r.cookies)
-            # print(r.cookies)
+            print(r.cookies)
 
 
             time.sleep(delay)
             r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
-            print('login...:', r.status_code)
+            # print('login...:', r.status_code)
             if ("账户或密码错误" in r.text):
                 return "账户或密码错误", '', ''
             cookies.update(dict(r.cookies))
@@ -237,8 +257,8 @@ def sign(user):
             }
             time.sleep(delay)
             r = requests.post('https://m.nuaa.edu.cn/ncov/wap/default/save', data=data, cookies=user['cookie'])
-            print('sign statue code:', r.status_code)
-            print('sign return:', r.text)
+            # print('sign statue code:', r.status_code)
+            # print('sign return:', r.text)
             r.encoding = 'utf-8'
             
             if r.text.find('成功') >= 0:
