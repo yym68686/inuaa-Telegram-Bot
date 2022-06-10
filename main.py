@@ -28,10 +28,18 @@ def start(update, context): # 当用户输入/start时，返回文本
         # reply_markup=ForceReply(selective=True),
     )
 
+def toUTC(t):
+    t2 = int(t[:2])
+    if t2 - 8 < 0:
+        t2 += 24
+    t2 -= 8
+    t = str(t2) + t[2:]
+    return t
+
 def help(update, context):
     message = (
         f"我是人见人爱的yym的小跟班~\n\n"
-        f"1. 我可以为你在每天 {checktime} 自动打卡\n"
+        f"1. 我可以为你在每天 {toUTC(checktime)} 自动打卡\n"
         f"输入 /check ID password 发给我就行啦\n"
         f"这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
         f"2. 你也可以手动打卡，记得每天发一句 /inuaa ID password 发给我哦~\n"
@@ -77,7 +85,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
     if (len(context.args) == 2): # /check 后面必须是两个参数
         message = (
             f"欢迎使用自动打卡功能~\n\n"
-            f"将在每日{checktime}打卡\n\n"
+            f"将在每日{toUTC(checktime)}打卡\n\n"
             f"请稍等哦，正在给您的信息添加到数据库~\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
