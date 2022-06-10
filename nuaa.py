@@ -12,7 +12,7 @@ import re
 try_times = 2
 
 # 每次requests请求的延迟(s秒)，太低会封IP
-delay = 3
+delay = 5
 
 
 '''
@@ -260,15 +260,14 @@ def sign(user):
             # print('sign statue code:', r.status_code)
             # print('sign return:', r.text)
             r.encoding = 'utf-8'
-            
             if r.text.find('成功') >= 0:
                 print(str(user['studentid']) + '·打卡成功')
                 return True
             else:
-                print('打卡失败，尝试重新登陆')
+                print(str(user['studentid']) + '·打卡失败，尝试重新登陆')
                 user['cookie'] = login(user['studentid'], user['password'])
         except Exception as e:
-            print('尝试失败')
+            print(str(user['studentid']) + '·尝试失败')
             print(e)
             pass
     return False
@@ -285,7 +284,7 @@ def startinuaa(studentid, password):
         if sign(user):
             return "打卡成功！"
         else:
-            return "打卡失败！"
+            return "打卡失败！请手动利用 /inuaa 打一下卡，问题会尽快修复的"
     else:
         return "输入格式错误！"
 
