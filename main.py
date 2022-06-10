@@ -91,7 +91,7 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     for item in Stuinfo:
         if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
-            context.bot.send_message(chat_id=person, text="账号已添加到数据库，不需要重复添加，系统会自动为您每日打卡") # 打卡结果打印
+            context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加，系统会自动为您每日打卡") # 打卡结果打印
             return
     body = {
         'properties':{}
