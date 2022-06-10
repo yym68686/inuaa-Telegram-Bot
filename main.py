@@ -16,7 +16,7 @@ MODE = os.getenv("MODE")
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 DATABASEID = os.getenv("DATABASEID")
-checktime = '10:24'
+checktime = '10:42'
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
