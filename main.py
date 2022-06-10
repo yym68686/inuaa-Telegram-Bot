@@ -117,16 +117,6 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         # cookie = GetCookie(context.args[0], context.args[1])
         # print(cookie)
         adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
-        # body = {
-        #     'properties':{}
-        # }
-        # body = NotionDatabase.body_properties_input(body, 'StuID', 'title', context.args[0])
-        # body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', context.args[1])
-        # body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', "**")
-        # body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', '1')
-        # body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(update.effective_chat.id))
-        # result = NotionDatabase.DataBase_additem(DATABASEID, body, context.args[0])
-        # context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
         message = (
             f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
