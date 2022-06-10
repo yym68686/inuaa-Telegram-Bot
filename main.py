@@ -37,10 +37,12 @@ def toUTC(t):
     if len(t) == 4:
         t = "0" + t
     return t
-
+# In all other places characters 
+# _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., ! 
+# must be escaped with the preceding character '\'.
 def help(update, context):
     message = (
-        "我是人见人爱的yym的小跟班~\n\n"
+        "我是人见人爱的yym的小跟班\~\n\n"
         f"1\. 我可以为你在每天 {checktime} 自动打卡\n"
         "输入 `/check ID password` 发给我就行啦\n"
         "这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
