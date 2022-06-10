@@ -149,7 +149,7 @@ def echoinfo(update: Update, context: CallbackContext):
         result += item["StuID"] + " " + item["password"] + "\n"
     if (update.effective_chat.id != admin):
         return
-    context.bot.send_message(chat_id=admin, text=result, parse_mode='MarkdownV2')
+    context.bot.send_message(chat_id=admin, text=result)
 
 def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
     if (len(context.args) == 2): # /inuaa后面必须是两个参数
