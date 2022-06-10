@@ -38,6 +38,7 @@ def toUTC(t):
     if len(t) == 4:
         t = "0" + t
     return t
+
 # In all other places characters 
 # _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., ! 
 # must be escaped with the preceding character '\'.
