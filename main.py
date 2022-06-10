@@ -34,6 +34,8 @@ def toUTC(t):
         t2 += 24
     t2 -= 8
     t = str(t2) + t[2:]
+    if len(t) == 4:
+        t = "0" + t
     return t
 
 def help(update, context):
