@@ -12,7 +12,7 @@ import re
 try_times = 2
 
 # 每次requests请求的延迟(s秒)，太低会封IP
-delay = 5
+delay = 3
 
 
 '''
