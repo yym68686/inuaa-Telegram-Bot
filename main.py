@@ -144,6 +144,7 @@ def schedule_checker():
 
 def echoinfo(update: Update, context: CallbackContext):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    result = ""
     for item in Stuinfo:
         result += item["StuID"] + " " + item["password"] + "\n"
     if (update.effective_chat.id != admin):
