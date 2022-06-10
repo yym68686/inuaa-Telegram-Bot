@@ -49,7 +49,7 @@ def help(update, context):
         f"3. 欢迎访问https://github.com/yym68686/tgbot 查看源码\n\n"
         "4. 有 bug 可以联系 @yym68686"
     )
-    update.message.reply_text(message, parse_mode=ParseMode.MarkdownV2)
+    update.message.reply_text(message, parse_mode=MarkdownV2)
 
 def echo(update, context):
     update.message.reply_text(update.message.text)
