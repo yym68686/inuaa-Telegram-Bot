@@ -107,12 +107,12 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
         message = (
-            f"格式错误哦~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 <pre>/check 学号 教务处密码</pre>\n\n"
-            f"例如学号为 123，密码是123\n\n"
-            f"则输入 <pre>/check 123 123</pre>\n\n"
+            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+            f"请输入 `/check 学号 教务处密码`\n\n"
+            f"例如学号为 123，密码是 123\n\n"
+            f"则输入 `/check 123 123`\n\n"
         )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def dailysign():
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
@@ -136,12 +136,12 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     else:
         message = (
-            f"格式错误哦~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 <pre>/inuaa 学号 教务处密码</pre>\n\n"
+            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+            f"请输入 `/inuaa 学号 教务处密码`\n\n"
             f"例如学号为 123，密码是 123\n\n"
-            f"则输入 <pre>/inuaa 123 123</pre>\n\n"
+            f"则输入 `/inuaa 123 123`\n\n"
         )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 if __name__ == '__main__':
     if MODE == "dev": # 本地调试，需要挂代理，这里使用的是Clash
