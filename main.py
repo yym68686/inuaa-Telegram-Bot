@@ -97,7 +97,7 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
     body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
     result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
-    if (person == admin)
+    if (person == admin):
         result = "用户更新：" + result
     context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
 
