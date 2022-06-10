@@ -161,7 +161,7 @@ def login(login_id, login_password):
             # print('get login page:', r.status_code)
            
             cookies = dict(r.cookies)
-            print(r.cookies)
+            # print(r.cookies)
 
 
             time.sleep(delay)
