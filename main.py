@@ -86,7 +86,7 @@ def caps(update: Update, context: CallbackContext): # 小的测试功能，也�
     text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
-def adddata(person, StuID, password, cookie, checkdaily, chatid):
+def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     body = {
         'properties':{}
     }
@@ -108,7 +108,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
         # cookie = GetCookie(context.args[0], context.args[1])
         # print(cookie)
-        adddata(update.effective_chat.id, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
+        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
         # body = {
         #     'properties':{}
         # }
@@ -149,7 +149,7 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
         result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
-        adddata(admin, context.args[0], "*", "**", '0', update.effective_chat.id)
+        adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
     else:
         message = (
             f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
