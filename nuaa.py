@@ -262,7 +262,7 @@ def sign(user):
             r.encoding = 'utf-8'
             
             if r.text.find('成功') >= 0:
-                print('打卡成功')
+                print(str(user['studentid']) + '·打卡成功')
                 return True
             else:
                 print('打卡失败，尝试重新登陆')
