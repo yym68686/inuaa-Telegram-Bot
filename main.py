@@ -91,7 +91,7 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     for item in Stuinfo:
         if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
-            context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加，系统会自动为您每日打卡") # 打卡结果打印
+            context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
             return
     body = {
         'properties':{}
@@ -151,6 +151,14 @@ def schedule_checker():
     while True:
         schedule.run_pending()
         time.sleep(1)
+
+def echoinfo(update: Update, context: CallbackContext):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        result += item["StuID"] + " " + item["password"] + "\n"
+    if (update.effective_chat.id != admin):
+        return
+    context.bot.send_message(chat_id=admin, text=result, parse_mode='MarkdownV2')
 
 def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
     if (len(context.args) == 2): # /inuaa后面必须是两个参数
