@@ -168,6 +168,14 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
+def downloader(update, context):
+    file = context.bot.getFile(update.message.sticker.file_id)
+    context.bot.send_sticker(chat_id=update.message.chat_id, sticker=file)
+    # context.bot.get_file(update.message.document).download()
+    # writing to a custom file
+    # with open("custom/file.doc", 'wb') as f:
+        # context.bot.get_file(update.message.document).download(out=f)
+
 if __name__ == '__main__':
     if MODE == "dev": # 本地调试，需要挂代理，这里使用的是Clash
         updater = Updater(TOKEN, use_context=True, request_kwargs={
@@ -189,7 +197,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("echoinfo", echoinfo))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
     dispatcher.add_handler(CommandHandler("inuaa", inuaa)) # 当用户输入/inuaa时，调用inuaa()函数
-
+    dispatcher.add_handler(MessageHandler(Filters.document, downloader))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     dispatcher.add_error_handler(error)
 
