@@ -200,6 +200,9 @@ if __name__ == '__main__':
         updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
 
     schedule.every().day.at(toUTC(checktime)).do(dailysign)
-    Thread(target=schedule_checker).start() 
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+    # Thread(target=schedule_checker).start() 
 
     updater.idle()
