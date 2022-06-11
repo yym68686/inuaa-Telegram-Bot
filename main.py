@@ -138,11 +138,11 @@ def dailysign():
             result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
             updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
 
-async def schedule_checker():
+def schedule_checker():
     while True:
         schedule.run_pending()
-        # time.sleep(1)
-        await asyncio.sleep(1)
+        time.sleep(1)
+        # await asyncio.sleep(1)
 
 def echoinfo(update: Update, context: CallbackContext):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
