@@ -3,7 +3,7 @@ import sys
 import html
 import time
 import asyncio
-import logging
+import logging, datetime, pytz
 import schedule
 import NotionDatabase
 from nuaa import startinuaa, GetCookie
@@ -144,6 +144,12 @@ def dailysign():
 #         time.sleep(1)
         # await asyncio.sleep(1)
 
+def weather(update, context):
+    context.job_queue.run_daily(msg, datetime.time(hour=1, minute=50, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
+
+def msg(context):
+    context.bot.send_message(chat_id=context.job.context, text='定时任务')
+
 def echoinfo(update: Update, context: CallbackContext):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     result = ""
@@ -195,6 +201,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CommandHandler("check", check))
     dispatcher.add_handler(CommandHandler("echoinfo", echoinfo))
+    dispatcher.add_handler(CommandHandler("weather", weather, pass_job_queue=True))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
     dispatcher.add_handler(CommandHandler("inuaa", inuaa)) # 当用户输入/inuaa时，调用inuaa()函数
     dispatcher.add_handler(MessageHandler(Filters.document, downloader))
