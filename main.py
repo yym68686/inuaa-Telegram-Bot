@@ -145,7 +145,7 @@ def dailysign():
         # await asyncio.sleep(1)
 
 def weather(update, context):
-    context.job_queue.run_daily(msg, datetime.time(hour=1, minute=50, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
+    context.job_queue.run_daily(msg, datetime.time(hour=1, minute=53, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
 
 def msg(context):
     context.bot.send_message(chat_id=context.job.context, text='定时任务')
