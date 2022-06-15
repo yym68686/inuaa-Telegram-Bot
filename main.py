@@ -17,7 +17,7 @@ MODE = os.getenv("MODE")
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 DATABASEID = os.getenv("DATABASEID")
-checktime = '02:16'
+checktime = '00:59'
 
 admin = 917527833
 
