@@ -202,6 +202,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CommandHandler("check", check))
     dispatcher.add_handler(CommandHandler("echoinfo", echoinfo))
+    dispatcher.add_handler(CommandHandler("dailysign", dailysign))
     dispatcher.add_handler(CommandHandler("weather", weather, pass_job_queue=True))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
     dispatcher.add_handler(CommandHandler("inuaa", inuaa)) # 当用户输入/inuaa时，调用inuaa()函数
