@@ -156,6 +156,7 @@ def dailysign():
             updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
             result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
             updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
 
 # def schedule_checker():
 #     while True:
