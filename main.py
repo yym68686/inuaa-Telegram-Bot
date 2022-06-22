@@ -1,8 +1,8 @@
 import os
 import sys
-import html
+# import html
 import time
-import asyncio
+# import asyncio
 import logging, datetime, pytz
 import schedule
 import NotionDatabase
@@ -93,7 +93,7 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     for item in Stuinfo:
         if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
-            context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
+            # context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
             return
     body = {
         'properties':{}
@@ -103,6 +103,7 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', cookie)
     body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
     body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
+    # body = NotionDatabase.body_properties_input(body, 'lastdate', 'rich_text', enddate)
     result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
     if (person == admin):
         result = "用户更新：" + result
@@ -118,6 +119,11 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
         # cookie = GetCookie(context.args[0], context.args[1])
         # print(cookie)
+        # now_time = datetime.datetime.now()
+        # end_time = now_time + datetime.timedelta(days = -1)
+        # # 前一天时间只保留 年-月-日
+        # enddate = end_time.strftime('%Y-%m-%d') #格式化输出
+        # today = time.strftime("%Y-%m-%d",time.localtime(time.time()))
         adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
     else:
         message = (
@@ -138,6 +144,7 @@ def daily(update: Update, context: CallbackContext):
             updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
             result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
             updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
 
 def dailysign():
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
@@ -176,6 +183,7 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
         result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
         adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
     else:
         message = (
