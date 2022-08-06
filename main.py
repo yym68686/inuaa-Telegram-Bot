@@ -153,6 +153,7 @@ def dailysign():
     # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
     for item in Stuinfo:
         if item["checkdaily"] == "1":
+            print("StuID: " + item['StuID'])
             updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
             result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
             updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
