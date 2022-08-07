@@ -1,3 +1,5 @@
+# git add . && git commit -m "modify main.py" && git push origin main
+# heroku logs --tail -a yymtg
 import os
 import sys
 # import html
@@ -147,11 +149,14 @@ def daily(update: Update, context: CallbackContext):
             updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
 
 def dailysign():
+    print(1)
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    print(Stuinfo)
+    print(2)
+    # print(Stuinfo)
     # seen = set()
     # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
     for item in Stuinfo:
+        print(3)
         if item["checkdaily"] == "1":
             print("StuID: " + item['StuID'])
             updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
