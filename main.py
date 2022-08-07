@@ -137,28 +137,28 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def daily(update: Update, context: CallbackContext):
-    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    print(Stuinfo)
-    # seen = set()
-    # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
-    for item in Stuinfo:
-        if item["checkdaily"] == "1":
-            updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
-            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
-            updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
-            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
-
-def dailysign():
     print(1)
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     print(2)
-    # print(Stuinfo)
+    print(Stuinfo)
     # seen = set()
     # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
     for item in Stuinfo:
         print(3)
         if item["checkdaily"] == "1":
             print("StuID: " + item['StuID'])
+            updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
+            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
+            updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+
+def dailysign():
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    print(Stuinfo)
+    # seen = set()
+    # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
+    for item in Stuinfo:
+        if item["checkdaily"] == "1":
             updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
             result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
             updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
