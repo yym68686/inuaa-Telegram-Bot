@@ -6,4 +6,4 @@
 
 # 上手指南
 
-https://blog.yym68686.top/TelegramBot
+https://yym68686.top/TelegramBot
