@@ -38,14 +38,15 @@ buttons = [
         InlineKeyboardButton("+", callback_data="+"),
     ],
 ]
-banner = "{:.^34}".format(" Calculator by @odbots ")
+# banner = "{:.^34}".format(" Calculator by @odbots ")
 logger = logging.getLogger(__name__)
 
 
 def start_handler(update, context):
     """Send a message when the command /start is issued."""
     update.message.reply_text(
-        text=banner, reply_markup=InlineKeyboardMarkup(buttons), quote=True
+        reply_markup=InlineKeyboardMarkup(buttons), quote=True
+        # text=banner, reply_markup=InlineKeyboardMarkup(buttons), quote=True
     )
 
 
