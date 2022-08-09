@@ -1,8 +1,12 @@
-import logging
 import re
+import os
+import logging
+import NotionDatabase
+from nuaa import startinuaa
 
-from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler
+from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler
 
 buttons = [
     [
@@ -43,7 +47,7 @@ banner = "@yym68686"
 logger = logging.getLogger(__name__)
 
 
-def start_handler(update, context):
+def start(update, context):
     """Send a message when the command /start is issued."""
     update.message.reply_text(
         # reply_markup=InlineKeyboardMarkup(buttons), quote=True
@@ -103,12 +107,64 @@ def button_press(update, context):
         logger.info(e)
         pass
 
+admin = 917527833
+DATABASEID = os.getenv("DATABASEID")
+def daily(update, context):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if item["checkdaily"] == "1":
+            if int(item["chat_id"]) != admin:
+                context.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
+            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
+            if int(item["chat_id"]) != admin:
+                context.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+            context.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+
+def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
+            # context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
+            return
+    body = {
+        'properties':{}
+    }
+    body = NotionDatabase.body_properties_input(body, 'StuID', 'title', StuID)
+    body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', password)
+    body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', cookie)
+    body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
+    body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
+    result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
+    if (person == admin):
+        result = "用户更新：" + result
+    context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
+
+checktime = '00:59'
+def check(update, context): # 添加自动打卡
+    if (len(context.args) == 2): # /check 后面必须是两个参数
+        message = (
+            f"欢迎使用自动打卡功能~\n\n"
+            f"将在每日{checktime}打卡\n\n"
+            f"请稍等哦，正在给您的信息添加到数据库~\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
+    else:
+        message = (
+            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+            f"请输入 `/check 学号 教务处密码`\n\n"
+            f"例如学号为 123，密码是 123\n\n"
+            f"则输入 `/check 123 123`\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def get_dispatcher(bot):
     """Create and return dispatcher instances"""
     dispatcher = Dispatcher(bot, None, workers=0)
 
-    dispatcher.add_handler(CommandHandler("start", start_handler))
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("check", check))
+    dispatcher.add_handler(CommandHandler("dailysign", daily))
     dispatcher.add_handler(CallbackQueryHandler(button_press))
 
     return dispatcher

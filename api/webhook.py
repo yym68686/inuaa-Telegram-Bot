@@ -4,7 +4,7 @@ import logging
 from flask import Flask, Blueprint, request, jsonify
 from telegram import Bot, Update
 
-from helpers.bot import get_dispatcher
+from bot import get_dispatcher
 
 
 app = Flask(__name__)
