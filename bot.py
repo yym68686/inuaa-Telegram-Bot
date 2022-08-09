@@ -171,6 +171,22 @@ def check(update, context): # 添加自动打卡
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
+def inuaa(update, context): # 当用户输入/inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
+    if (len(context.args) == 2): # /inuaa后面必须是两个参数
+        context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
+        result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
+        context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+        adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
+    else:
+        message = (
+            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+            f"请输入 `/inuaa 学号 教务处密码`\n\n"
+            f"例如学号为 123，密码是 123\n\n"
+            f"则输入 `/inuaa 123 123`\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+
 def get_dispatcher(bot):
     """Create and return dispatcher instances"""
     dispatcher = Dispatcher(bot, None, workers=0)
@@ -178,6 +194,7 @@ def get_dispatcher(bot):
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("check", check))
+    dispatcher.add_handler(CommandHandler("inuaa", inuaa))
     dispatcher.add_handler(CommandHandler("dailysign", daily))
     dispatcher.add_handler(CallbackQueryHandler(button_press))
 
