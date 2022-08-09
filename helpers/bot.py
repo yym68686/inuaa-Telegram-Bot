@@ -46,8 +46,8 @@ logger = logging.getLogger(__name__)
 def start_handler(update, context):
     """Send a message when the command /start is issued."""
     update.message.reply_text(
-        reply_markup=InlineKeyboardMarkup(buttons), quote=True
-        # text=banner, reply_markup=InlineKeyboardMarkup(buttons), quote=True
+        # reply_markup=InlineKeyboardMarkup(buttons), quote=True
+        text=banner, reply_markup=InlineKeyboardMarkup(buttons), quote=True
     )
 
 
