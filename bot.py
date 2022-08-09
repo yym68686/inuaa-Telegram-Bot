@@ -107,6 +107,19 @@ def button_press(update, context):
         logger.info(e)
         pass
 
+def help(update, context):
+    message = (
+        "我是人见人爱的yym的小跟班\~\n\n"
+        f"1\. 我可以为你在每天 {checktime} 自动打卡\n"
+        "输入 `/check ID password` 发给我就行啦\n"
+        "这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
+        "2\. 你也可以手动打卡，记得每天发一句 `/inuaa ID password` 发给我哦\~\n"
+        "这个功能不会存密码\n\n"
+        "3\. 欢迎访问https://github\.com/yym68686/tgbot 查看源码\n\n"
+        "4\. 有 bug 可以联系 @yym68686"
+    )
+    update.message.reply_text(message, parse_mode='MarkdownV2')
+
 admin = 917527833
 DATABASEID = os.getenv("DATABASEID")
 def daily(update, context):
@@ -163,6 +176,7 @@ def get_dispatcher(bot):
     dispatcher = Dispatcher(bot, None, workers=0)
 
     dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("check", check))
     dispatcher.add_handler(CommandHandler("dailysign", daily))
     dispatcher.add_handler(CallbackQueryHandler(button_press))
