@@ -14,7 +14,6 @@ app.config["tg_bot"] = bot
 app.config["tg_dispatcher"] = get_dispatcher(bot)
 logger = logging.getLogger(__name__)
 
-
 @api.route("/", methods=["POST"])
 def webhook():
     update_json = request.get_json()
