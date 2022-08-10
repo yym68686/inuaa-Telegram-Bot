@@ -1,5 +1,3 @@
-import os
-import time
 import logging
 from flask import Flask, Blueprint, request, jsonify
 from telegram import Bot, Update
