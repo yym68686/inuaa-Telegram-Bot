@@ -9,7 +9,7 @@ import re
 
 
 # 如果发包过快会造成502，如果给多个同学打卡请注意一下请求速度
-try_times = 2
+try_times = 3
 
 # 每次requests请求的延迟(s秒)，太低会封IP
 delay = 6
