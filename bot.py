@@ -191,6 +191,7 @@ def inuaa(update, context): # 当用户输入/inuaa 学号，密码 时，自动
                 cookies = dict(r.cookies)
                 # print(r.cookies)
                 time.sleep(delay)
+                print('start check')
                 r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
                 print('login...:', r.status_code)
                 if ("账户或密码错误" in r.text):
