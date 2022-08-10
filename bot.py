@@ -232,7 +232,7 @@ def inuaa(update, context): # 当用户输入/inuaa 学号，密码 时，自动
         # r = requests.get('https://m.nuaa.edu.cn/ncov/wap/default', cookies=cookies)
         # print('get login page:', r.status_code)
 
-        # result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
+        result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
         context.bot.send_message(chat_id=update.effective_chat.id, text="完成调用打卡函数")
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
         context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
