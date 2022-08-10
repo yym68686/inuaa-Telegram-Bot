@@ -180,49 +180,49 @@ def inuaa(update, context): # 当用户输入/inuaa 学号，密码 时，自动
         context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
         result = "test"
 
-        cookies = ''
-        delay = 6
-        login_id = context.args[0]
-        login_password = context.args[1]
-        for _ in range(2):
-            try:
-                time.sleep(delay)
-                r = requests.get('https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
-                print('get login page:', r.status_code)
-                print('1')
-                cookies = dict(r.cookies)
-                print('2')
-                # print(r.cookies)
-                time.sleep(delay)
-                print('start check')
-                r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
-                print('login...:', r.status_code)
-                if ("账户或密码错误" in r.text):
-                    return "账户或密码错误", '', ''
-                cookies.update(dict(r.cookies))
-                # headers['Cookie'] = cookie
-                for _ in range(2):
-                    try:
-                        time.sleep(delay)
-                        response = requests.get('https://m.nuaa.edu.cn/ncov/wap/default', cookies=cookies)
-                        response.encoding = 'utf-8'
-                        print(response.text)
-                        uid = re.search(r'"uid":"([0-9]*)"', response.text).group(1)
-                        id = re.search(r'"id":([0-9]*)', response.text).group(1)
-                        # print(uid, id)
-                        # return uid,id
-                    except Exception as e:
-                        print(e)
-                # uid, id = get_uid_id(cookies)
-                # return cookies, uid, id
-            except Exception as e:
-                print(e)
-                print('login failed.')
-                pass
-        if ("账户或密码错误" in cookies):
-            print("{{(>_<)}}}，账户或密码错误，呜呜呜。")
-        else:
-            print("登录成功！")
+        # cookies = ''
+        # delay = 6
+        # login_id = context.args[0]
+        # login_password = context.args[1]
+        # for _ in range(2):
+        #     try:
+        #         time.sleep(delay)
+        #         r = requests.get('https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
+        #         print('get login page:', r.status_code)
+        #         cookies = dict(r.cookies)
+        #         # print(r.cookies)
+        #         print('1')
+        #         time.sleep(delay)
+        #         print('2')
+        #         print('start check')
+        #         r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
+        #         print('login...:', r.status_code)
+        #         if ("账户或密码错误" in r.text):
+        #             return "账户或密码错误", '', ''
+        #         cookies.update(dict(r.cookies))
+        #         # headers['Cookie'] = cookie
+        #         for _ in range(2):
+        #             try:
+        #                 time.sleep(delay)
+        #                 response = requests.get('https://m.nuaa.edu.cn/ncov/wap/default', cookies=cookies)
+        #                 response.encoding = 'utf-8'
+        #                 print(response.text)
+        #                 uid = re.search(r'"uid":"([0-9]*)"', response.text).group(1)
+        #                 id = re.search(r'"id":([0-9]*)', response.text).group(1)
+        #                 # print(uid, id)
+        #                 # return uid,id
+        #             except Exception as e:
+        #                 print(e)
+        #         # uid, id = get_uid_id(cookies)
+        #         # return cookies, uid, id
+        #     except Exception as e:
+        #         print(e)
+        #         print('login failed.')
+        #         pass
+        # if ("账户或密码错误" in cookies):
+        #     print("{{(>_<)}}}，账户或密码错误，呜呜呜。")
+        # else:
+        #     print("登录成功！")
 
         # cookies = ''
         # r = requests.get('https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
