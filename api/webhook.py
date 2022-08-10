@@ -32,17 +32,17 @@ def home():
 
 app.register_blueprint(api, url_prefix="/api/webhook")
 
-def toUTC(t):
-    t2 = int(t[:2])
-    if t2 - 8 < 0:
-        t2 += 24
-    t2 -= 8
-    t = str(t2) + t[2:]
-    if len(t) == 4:
-        t = "0" + t
-    return t
+# def toUTC(t):
+#     t2 = int(t[:2])
+#     if t2 - 8 < 0:
+#         t2 += 24
+#     t2 -= 8
+#     t = str(t2) + t[2:]
+#     if len(t) == 4:
+#         t = "0" + t
+#     return t
 
-schedule.every().day.at(toUTC(checktime)).do(dailysign)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# schedule.every().day.at(toUTC(checktime)).do(dailysign)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
