@@ -8,6 +8,7 @@ from nuaa import startinuaa
 from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler, Updater
+from config import checktime, BOT_TOKEN, ADMIN, DATABASEID
 
 buttons = [
     [
@@ -122,29 +123,27 @@ def help(update, context):
     update.message.reply_text(message, parse_mode='MarkdownV2')
 
 
-admin = 917527833
-DATABASEID = os.getenv("DATABASEID")
 def daily(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     for item in Stuinfo:
         if item["checkdaily"] == "1":
-            if int(item["chat_id"]) != admin:
+            if int(item["chat_id"]) != ADMIN:
                 context.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
             result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
-            if int(item["chat_id"]) != admin:
+            if int(item["chat_id"]) != ADMIN:
                 context.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
-            context.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+            context.bot.send_message(chat_id = ADMIN, text=item['StuID'] + result) # 打卡结果打印
 
-updater = Updater(os.environ["BOT_TOKEN"], use_context=True)
+updater = Updater(BOT_TOKEN, use_context=True)
 def dailysign():
-    updater.bot.send_message(chat_id = admin, text="test") # 打卡结果打印
+    updater.bot.send_message(chat_id = ADMIN, text="test") # 打卡结果打印
     # Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     # for item in Stuinfo:
     #     if item["checkdaily"] == "1":
     #         updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
     #         result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
     #         updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
-    #         updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+    #         updater.bot.send_message(chat_id = ADMIN, text=item['StuID'] + result) # 打卡结果打印
 
 def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
@@ -161,11 +160,10 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
     body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
     result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
-    if (person == admin):
+    if (person == ADMIN):
         result = "用户更新：" + result
     context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
 
-checktime = '00:59'
 def check(update, context): # 添加自动打卡
     if (len(context.args) == 2): # /check 后面必须是两个参数
         message = (
@@ -189,8 +187,8 @@ def inuaa(update, context): # 当用户输入/inuaa 学号，密码 时，自动
         context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
         result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
-        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
-        adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
+        context.bot.send_message(chat_id=ADMIN, text=context.args[0] + result) # 打卡结果打印
+        adddata(ADMIN, context, context.args[0], "*", "**", '0', update.effective_chat.id)
     else:
         message = (
             f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"

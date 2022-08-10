@@ -5,12 +5,12 @@ import schedule
 from flask import Flask, Blueprint, request, jsonify
 from telegram import Bot, Update
 
-from bot import get_dispatcher, checktime, dailysign
-
+from bot import get_dispatcher, dailysign
+from config import checktime, BOT_TOKEN
 
 app = Flask(__name__)
 api = Blueprint("serverless_handler", __name__)
-bot = Bot(os.environ["BOT_TOKEN"])
+bot = Bot(BOT_TOKEN)
 app.config["tg_bot"] = bot
 app.config["tg_dispatcher"] = get_dispatcher(bot)
 logger = logging.getLogger(__name__)
