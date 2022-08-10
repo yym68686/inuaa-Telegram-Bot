@@ -1,14 +1,12 @@
-from http import cookies
 import re
-import os
 import logging
 import NotionDatabase
 from nuaa import startinuaa
 
-from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler, Updater
-from config import checktime, BOT_TOKEN, ADMIN, DATABASEID
+from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler
+from config import checktime, ADMIN, DATABASEID
+
 
 buttons = [
     [
@@ -44,15 +42,14 @@ buttons = [
         InlineKeyboardButton("+", callback_data="+"),
     ],
 ]
-banner = "@yym68686"
-# banner = "{:.^34}".format(" Calculator by @odbots ")
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+banner = "@yym68686"
 def start(update, context):
     """Send a message when the command /start is issued."""
     update.message.reply_text(
-        # reply_markup=InlineKeyboardMarkup(buttons), quote=True
         text=banner, reply_markup=InlineKeyboardMarkup(buttons), quote=True
     )
 
@@ -122,7 +119,6 @@ def help(update, context):
     )
     update.message.reply_text(message, parse_mode='MarkdownV2')
 
-
 def daily(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     for item in Stuinfo:
@@ -133,54 +129,6 @@ def daily(update, context):
             if int(item["chat_id"]) != ADMIN:
                 context.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
             context.bot.send_message(chat_id = ADMIN, text=item['StuID'] + result) # 打卡结果打印
-
-updater = Updater(BOT_TOKEN, use_context=True)
-def dailysign():
-    updater.bot.send_message(chat_id = ADMIN, text="test") # 打卡结果打印
-    # Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    # for item in Stuinfo:
-    #     if item["checkdaily"] == "1":
-    #         updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
-    #         result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
-    #         updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
-    #         updater.bot.send_message(chat_id = ADMIN, text=item['StuID'] + result) # 打卡结果打印
-
-def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
-    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    for item in Stuinfo:
-        if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
-            # context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
-            return
-    body = {
-        'properties':{}
-    }
-    body = NotionDatabase.body_properties_input(body, 'StuID', 'title', StuID)
-    body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', password)
-    body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', cookie)
-    body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
-    body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
-    result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
-    if (person == ADMIN):
-        result = "用户更新：" + result
-    context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
-
-def check(update, context): # 添加自动打卡
-    if (len(context.args) == 2): # /check 后面必须是两个参数
-        message = (
-            f"欢迎使用自动打卡功能~\n\n"
-            f"将在每日{checktime}打卡\n\n"
-            f"请稍等哦，正在给您的信息添加到数据库~\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
-        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
-    else:
-        message = (
-            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 `/check 学号 教务处密码`\n\n"
-            f"例如学号为 123，密码是 123\n\n"
-            f"则输入 `/check 123 123`\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def inuaa(update, context): # 当用户输入/inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
     if (len(context.args) == 2): # /inuaa后面必须是两个参数
@@ -204,7 +152,6 @@ def get_dispatcher(bot):
 
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
-    dispatcher.add_handler(CommandHandler("check", check))
     dispatcher.add_handler(CommandHandler("inuaa", inuaa))
     dispatcher.add_handler(CommandHandler("dailysign", daily))
     dispatcher.add_handler(CallbackQueryHandler(button_press))
