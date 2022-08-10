@@ -1,9 +1,9 @@
 import os
 import json
 import requests
-
+from config import NotionToken
 # notion基本参数
-token = os.getenv("NotionToken")
+token = NotionToken
 headers = {
     'Notion-Version': '2022-02-22',
     'Authorization': 'Bearer ' + token,
