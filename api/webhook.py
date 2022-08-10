@@ -1,10 +1,11 @@
 import os
+import time
 import logging
-
+import schedule
 from flask import Flask, Blueprint, request, jsonify
 from telegram import Bot, Update
 
-from bot import get_dispatcher
+from bot import get_dispatcher, checktime, dailysign
 
 
 app = Flask(__name__)
@@ -13,6 +14,7 @@ bot = Bot(os.environ["BOT_TOKEN"])
 app.config["tg_bot"] = bot
 app.config["tg_dispatcher"] = get_dispatcher(bot)
 logger = logging.getLogger(__name__)
+
 
 @api.route("/", methods=["POST"])
 def webhook():
@@ -29,3 +31,18 @@ def home():
 
 
 app.register_blueprint(api, url_prefix="/api/webhook")
+
+def toUTC(t):
+    t2 = int(t[:2])
+    if t2 - 8 < 0:
+        t2 += 24
+    t2 -= 8
+    t = str(t2) + t[2:]
+    if len(t) == 4:
+        t = "0" + t
+    return t
+
+schedule.every().day.at(toUTC(checktime)).do(dailysign)
+while True:
+    schedule.run_pending()
+    time.sleep(1)

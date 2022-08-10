@@ -1,15 +1,13 @@
 from http import cookies
 import re
 import os
-import time
 import logging
-import requests
 import NotionDatabase
 from nuaa import startinuaa
 
 from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler
+from telegram.ext import Dispatcher, CommandHandler, CallbackQueryHandler, Updater
 
 buttons = [
     [
@@ -136,6 +134,17 @@ def daily(update, context):
             if int(item["chat_id"]) != admin:
                 context.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
             context.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+
+updater = Updater(os.environ["BOT_TOKEN"], use_context=True)
+def dailysign():
+    updater.bot.send_message(chat_id = admin, text="test") # 打卡结果打印
+    # Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    # for item in Stuinfo:
+    #     if item["checkdaily"] == "1":
+    #         updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
+    #         result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
+    #         updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+    #         updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
 
 def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
