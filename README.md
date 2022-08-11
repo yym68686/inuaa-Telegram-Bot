@@ -8,7 +8,7 @@
 
 # 上手指南
 
-https://yym68686.top/TelegramBot
+https://yym68686.top/telegram-bot-i南航打卡-部署-vercel-无服务器微服务
 
 # Calculator Bot
 
