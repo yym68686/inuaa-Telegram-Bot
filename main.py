@@ -6,7 +6,6 @@ from telegram.ext import Updater
 
 TOKEN = os.getenv("TOKEN") # 从环境变量自动获取telegram bot Token
 DATABASEID = os.getenv("DATABASEID")
-checktime = '00:59'
 admin = 917527833
 
 def dailysign():
