@@ -1,8 +1,7 @@
 name: inuaa
 on:
   schedule:
-  - cron:  '24 3 * * *'
-  # - cron:  '0 0 * * *'
+  - cron:  '0 17 * * *'
   workflow_dispatch:
 
 jobs:
