@@ -6,6 +6,7 @@
 
 - main 分支 HeroKu 部署实例
 - vercel 分支 vercel 部署实例
+- action 分支 每日打卡并发送消息至用户
 
 # 上手指南
 
