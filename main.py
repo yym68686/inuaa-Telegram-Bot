@@ -221,7 +221,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     dispatcher = updater.dispatcher
-
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("caps", caps))
