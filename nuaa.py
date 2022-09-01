@@ -156,12 +156,12 @@ def login(login_id, login_password):
     for _ in range(try_times):
         try:
             time.sleep(delay)
-            r = requests.get(
-                'https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
+            r = requests.get('https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
             # print('get login page:', r.status_code)
            
             cookies = dict(r.cookies)
-            # print(r.cookies)
+            print(dict(r.cookies))
+            # exit(0)
 
 
             time.sleep(delay)
@@ -279,6 +279,8 @@ def startinuaa(studentid, password):
     user['password'] = password
     if (studentid != '' and password != ''):
         user['cookie'], user['uid'], user['id'] = login(studentid, password)
+        print(dict(user['cookie']))
+        exit(0)
         if ("账户或密码错误" in user['cookie']):
                 return "{{(>_<)}}}，账户或密码错误，呜呜呜。"
         if sign(user):
