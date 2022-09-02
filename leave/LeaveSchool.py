@@ -81,6 +81,10 @@ def POSTraw(username, password, leavetime):
     hh = hack.httpraw(postraw.format(stepId, fieldAfdy, timestamp, jsessionID, csrfToken, leaveSchool_timestamp, Studept), ssl=type)
     test_str = hh.text()
     print(test_str)
+    if ("SUCCEED" in test_str):
+        return "已成功申请！出校愉快~"
+    else:
+        return "嘤嘤嘤~，出错啦！"
 
 if __name__ == '__main__':
     POSTraw(sys.argv[1], sys.argv[2], sys.argv[3])

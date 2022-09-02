@@ -9,6 +9,7 @@ import logging, datetime, pytz
 import schedule
 import NotionDatabase
 from nuaa import startinuaa, GetCookie
+from leave.LeaveSchool import POSTraw
 from threading import Thread
 from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update
@@ -201,6 +202,21 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
+def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
+    if (len(context.args) == 3): # /leave 后面必须是三个参数
+        context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...")
+        result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
+        context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+    else:
+        message = (
+            f"格式错误哦\~，需要三个参数，注意学号 密码 出校日期之间的空格\n\n"
+            f"请输入 `/leave 学号 教务处密码 出校日期`\n\n"
+            f"例如学号为 123，密码是 123，出校日期 2022\.9\.6\n\n"
+            f"则输入 `/leave 123 123 2022\-9\-6`\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+
 def downloader(update, context):
     file = context.bot.getFile(update.message.sticker.file_id)
     context.bot.send_sticker(chat_id=update.message.chat_id, sticker=file)
@@ -228,6 +244,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("check", check))
     dispatcher.add_handler(CommandHandler("echoinfo", echoinfo))
     dispatcher.add_handler(CommandHandler("dailysign", daily))
+    dispatcher.add_handler(CommandHandler("leave", leave))
     dispatcher.add_handler(CommandHandler("weather", weather, pass_job_queue=True))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
     dispatcher.add_handler(CommandHandler("inuaa", inuaa)) # 当用户输入/inuaa时，调用inuaa()函数
