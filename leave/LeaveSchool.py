@@ -5,7 +5,7 @@ import asyncio
 import leave.HackRequests
 from datetime import date
 from pyppeteer import launch
-from config import GetStepIdraw, raw
+from leave.config import GetStepIdraw, raw
 
 # 获取 cookies
 async def getJSESSIONID(username, password):
