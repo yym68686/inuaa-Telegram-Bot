@@ -36,7 +36,6 @@ async def getJSESSIONID(username, password):
     await page.waitForSelector("#preview_start_button")
     # 打印页面cookies
     cookie = await page.cookies()
-    # print(cookie[1]["value"])
     # 关闭浏览器
     await browser.close()
     return cookie[1]["value"]
