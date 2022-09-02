@@ -10,7 +10,6 @@ from leave.config import GetStepIdraw, raw
 # 获取 cookies
 async def getJSESSIONID(username, password):
     # browser = await launch(headless=False, args=['--disable-infobars'])
-    print("*****")
     # 加上三个参数，否则报错：signal only works in main thread of the main interpreter 参考链接：https://stackoverflow.com/questions/53679905/running-pypupeteer-in-flask-gives-valueerror-signal-only-works-in-main-thread
     browser = await launch({
         'handleSIGINT':False,
