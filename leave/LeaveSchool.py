@@ -20,7 +20,6 @@ async def getJSESSIONID(username, password):
         # fix bug: HeroKu Browser closed unexpectedly link:https://stackoverflow.com/a/70074296
         'args': ['--no-sandbox']
     })
-    print("****")
     page = await browser.newPage()
     # 绕过 WebDriver 的检测，在每次加载网页的时候执行语句，执行将 WebDriver 隐藏的命令
     await page.evaluateOnNewDocument('Object.defineProperty(navigator, "webdriver", {get: () => undefined})')
@@ -29,15 +28,12 @@ async def getJSESSIONID(username, password):
     # 是否启用JS，enabled设为False，则无渲染效果
     await page.setJavaScriptEnabled(enabled=True)
     res = await page.goto('https://ehall.nuaa.edu.cn/infoplus/form/YQFKXSFXLSCX_CS/start?theme=nuaa_new')
-    print("*")
     await page.waitForSelector("#login_submit")
-    print("**")
     await page.type('#username', username)
     await page.type('#password', password)
     await asyncio.sleep(1)
     await page.click('#login_submit')
     await page.waitForSelector("#preview_start_button")
-    print("***")
     # 打印页面cookies
     cookie = await page.cookies()
     # print(cookie[1]["value"])
