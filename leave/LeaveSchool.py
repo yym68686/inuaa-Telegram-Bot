@@ -16,6 +16,7 @@ async def getJSESSIONID(username, password):
         'handleSIGINT':False,
         'handleSIGTERM': False,
         'handleSIGHUP': False,
+        'headless': True,
         # fix bug: HeroKu Browser closed unexpectedly
         'args': ['--no-sandbox']
     })
