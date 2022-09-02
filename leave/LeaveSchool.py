@@ -43,7 +43,7 @@ def POSTraw(username, password, leavetime):
     # 当前时间戳
     timestamp = int(time.time())
     # 获取 cookies
-    jsessionID = asyncio.get_event_loop().run_until_complete(getJSESSIONID(username, password))
+    jsessionID = asyncio.get_event_loop().run_until_complete(getJSESSIONID(username, password, interruptable=False))
     # 不可以用 jsessionID = asyncio.get_event_loop().run_until_complete(getJSESSIONID(username, password))
     # 在主线程中，调用get_event_loop总能返回属于主线程的event loop对象，如果是处于非主线程中，还需要调用set_event_loop方法指定一个event loop对象，这样get_event_loop才会获取到被标记的event loop对象
     # new_loop = asyncio.new_event_loop()
