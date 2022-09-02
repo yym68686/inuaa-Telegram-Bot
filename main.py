@@ -211,7 +211,7 @@ def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学
         # # task = asyncio.ensure_future()
         # result = loop.run_until_complete(POSTraw(context.args[0], context.args[1], context.args[2]))
         # loop.close()
-        t = threading.Thread(target=POSTraw,args=(context.args[0], context.args[1], context.args[2],))    #开启新的线程去启动事件循环
+        t = Thread(target=POSTraw,args=(context.args[0], context.args[1], context.args[2],))    #开启新的线程去启动事件循环
         t.start()
         # result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
