@@ -4,7 +4,7 @@ import os
 import sys
 # import html
 import time
-# import asyncio
+import asyncio
 import logging, datetime, pytz
 import schedule
 import NotionDatabase
