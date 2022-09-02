@@ -205,7 +205,13 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
     if (len(context.args) == 3): # /leave 后面必须是三个参数
         context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...")
-        result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
+        new_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(new_loop)
+        loop = asyncio.get_event_loop()
+        # task = asyncio.ensure_future()
+        result = loop.run_until_complete(POSTraw(context.args[0], context.args[1], context.args[2]))
+        loop.close()
+        # result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
         context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
     else:
