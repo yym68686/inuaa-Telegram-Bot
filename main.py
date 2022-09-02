@@ -212,8 +212,9 @@ def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学
         message = (
             f"格式错误哦\~，需要三个参数，注意学号 密码 出校日期之间的空格\n\n"
             f"请输入 `/leave 学号 教务处密码 出校日期`\n\n"
-            f"例如学号为 123，密码是 123，出校日期 2022\.9\.6\n\n"
-            f"则输入 `/leave 123 123 2022\-9\-6`\n\n"
+            f"例如学号为 1234，密码是 123，出校日期 2022\-9\-6\n\n"
+            f"则输入 `/leave 1234 123 2022\-9\-6`\n\n"
+            f"日期用短横线隔开。\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
