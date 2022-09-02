@@ -48,9 +48,10 @@ def POSTraw(username, password, leavetime):
     new_loop = asyncio.new_event_loop()
     asyncio.set_event_loop(new_loop)
     loop = asyncio.get_event_loop()
-    task = asyncio.ensure_future(getJSESSIONID(username, password))
-    loop.run_until_complete(asyncio.wait([task]))
-    jsessionID = task.result()
+    # task = asyncio.ensure_future()
+    jsessionID = loop.run_until_complete(getJSESSIONID(username, password))
+    loop.close()
+    # jsessionID = task.result()
     print("jsessionID", jsessionID)
     # 0515000 航天学院
     # 0518000 长空学院
