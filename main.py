@@ -45,7 +45,7 @@ def toUTC(t):
     return t
 
 # In all other places characters 
-# _, *, [, ], (, ), ~, `, >, #, +, -, =, |, {, }, ., ! 
+# _ * [ ] ( ) ~ ` > # + - = | { } . ! 
 # must be escaped with the preceding character '\'.
 def help(update, context):
     message = (
@@ -134,6 +134,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
             f"请输入 `/check 学号 教务处密码`\n\n"
             f"例如学号为 1234，密码是 123\n\n"
             f"则输入 `/check 1234 123`\n\n"
+            f"👆点击上方命令复制格式\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
@@ -186,8 +187,8 @@ def echoinfo(update: Update, context: CallbackContext):
         return
     context.bot.send_message(chat_id=admin, text=result)
 
-def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
-    if (len(context.args) == 2): # /inuaa后面必须是两个参数
+def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
+    if (len(context.args) == 2): # /inuaa 后面必须是两个参数
         context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
         result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
@@ -199,21 +200,22 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入/inuaa 学
             f"请输入 `/inuaa 学号 教务处密码`\n\n"
             f"例如学号为 1234，密码是 123\n\n"
             f"则输入 `/inuaa 1234 123`\n\n"
+            f"👆点击上方命令复制格式\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
     if (len(context.args) == 3): # /leave 后面必须是三个参数
         context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...")
-        # new_loop = asyncio.new_event_loop()
-        # asyncio.set_event_loop(new_loop)
-        # loop = asyncio.get_event_loop()
-        # # task = asyncio.ensure_future()
-        # result = loop.run_until_complete(POSTraw(context.args[0], context.args[1], context.args[2]))
-        # loop.close()
-        t = Thread(target=POSTraw,args=(context.args[0], context.args[1], context.args[2],))    #开启新的线程去启动事件循环
-        t.start()
-        result ="77"
+        new_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(new_loop)
+        loop = asyncio.get_event_loop()
+        # task = asyncio.ensure_future()
+        result = loop.run_until_complete(POSTraw(context.args[0], context.args[1], context.args[2]))
+        loop.close()
+        # t = Thread(target=POSTraw,args=(context.args[0], context.args[1], context.args[2],))    #开启新的线程去启动事件循环
+        # t.start()
+        # result ="77"
         # result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
         context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
