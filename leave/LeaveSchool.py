@@ -10,11 +10,13 @@ from leave.config import GetStepIdraw, raw
 # 获取 cookies
 async def getJSESSIONID(username, password):
     # browser = await launch(headless=False, args=['--disable-infobars'])
+    print("*****")
     browser = await launch({
         'handleSIGINT':False,
         'handleSIGTERM': False,
         'handleSIGHUP': False
     })
+    print("****")
     page = await browser.newPage()
     # 绕过 WebDriver 的检测，在每次加载网页的时候执行语句，执行将 WebDriver 隐藏的命令
     await page.evaluateOnNewDocument('Object.defineProperty(navigator, "webdriver", {get: () => undefined})')
