@@ -31,7 +31,7 @@ async def getJSESSIONID(username, password):
     await browser.close()
     return cookie[1]["value"]
 
-async def POSTraw(username, password, leavetime):
+def POSTraw(username, password, leavetime):
     # 变量配置
     stepId = ""
     csrfToken = "tkx6BTNaH8Fy4hNKawyjhDMVDBdvrD2i"
