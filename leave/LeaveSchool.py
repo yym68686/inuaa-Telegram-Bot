@@ -34,6 +34,7 @@ async def getJSESSIONID(username, password):
     print("**")
     await page.type('#username', username)
     await page.type('#password', password)
+    await asyncio.sleep(1)
     await page.click('#login_submit')
     await page.waitForSelector("#preview_start_button")
     print("***")
