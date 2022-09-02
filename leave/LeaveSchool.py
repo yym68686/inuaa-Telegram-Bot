@@ -2,7 +2,7 @@ import re
 import sys
 import time
 import asyncio
-import leave.HackRequests
+import leave.HackRequests as HackRequests
 from datetime import date
 from pyppeteer import launch
 from leave.config import GetStepIdraw, raw
@@ -17,7 +17,7 @@ async def getJSESSIONID(username, password):
         'handleSIGTERM': False,
         'handleSIGHUP': False,
         'headless': True,
-        # fix bug: HeroKu Browser closed unexpectedly
+        # fix bug: HeroKu Browser closed unexpectedly link:https://stackoverflow.com/a/70074296
         'args': ['--no-sandbox']
     })
     print("****")
@@ -59,13 +59,20 @@ def POSTraw(username, password, leavetime):
     # jsessionID = asyncio.get_event_loop().run_until_complete(getJSESSIONID(username, password, interruptable=False))
     # 不可以用 jsessionID = asyncio.get_event_loop().run_until_complete(getJSESSIONID(username, password))
     # 在主线程中，调用get_event_loop总能返回属于主线程的event loop对象，如果是处于非主线程中，还需要调用set_event_loop方法指定一个event loop对象，这样get_event_loop才会获取到被标记的event loop对象
-    new_loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(new_loop)
-    loop = asyncio.get_event_loop()
-    # task = asyncio.ensure_future()
-    jsessionID = loop.run_until_complete(getJSESSIONID(username, password))
-    loop.close()
-    print("jsessionID", jsessionID)
+    for _ in range(3):
+        new_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(new_loop)
+        loop = asyncio.get_event_loop()
+        # task = asyncio.ensure_future()
+        jsessionID = loop.run_until_complete(getJSESSIONID(username, password))
+        loop.close()
+        if (len(jsessionID) < 34):
+            print("Get jsessionID error!")
+            if (_ == 2):
+                exit(0)
+        else:
+            print("jsessionID", jsessionID)
+            break
     # 0515000 航天学院
     # 0518000 长空学院
     Studept = "0501000"
