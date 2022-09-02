@@ -48,7 +48,7 @@ def POSTraw(username, password, leavetime):
     new_loop = asyncio.new_event_loop()
     asyncio.set_event_loop(new_loop)
     loop = asyncio.get_event_loop()
-    task = asyncio.ensure_future(do_work(getJSESSIONID(username, password)))
+    task = asyncio.ensure_future(getJSESSIONID(username, password))
     loop.run_until_complete(asyncio.wait([task]))
     jsessionID = task.result()
     print("jsessionID", jsessionID)
