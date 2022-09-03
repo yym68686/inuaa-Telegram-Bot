@@ -28,11 +28,15 @@ async def getJSESSIONID(username, password):
     await page.setJavaScriptEnabled(enabled=True)
     res = await page.goto('https://ehall.nuaa.edu.cn/infoplus/form/YQFKXSFXLSCX_CS/start?theme=nuaa_new')
     await page.waitForSelector("#login_submit")
+    content = await page.content()
+    print(content)
     await page.type('#username', username)
     await page.type('#password', password)
     await page.click('#login_submit')
     await asyncio.sleep(5)
     await page.waitForSelector("#preview_start_button")
+    content = await page.content()
+    print(content)
     # 打印页面cookies
     cookie = await page.cookies()
     # 关闭浏览器
