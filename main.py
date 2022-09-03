@@ -177,7 +177,10 @@ def weather(update, context):
     context.job_queue.run_daily(msg, datetime.time(hour=1, minute=56, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
 
 def speak(update, context):
-    context.job_queue.run_daily(msg, datetime.time(hour=1, minute=56, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if item["checkdaily"] == "1":
+            updater.bot.send_message(chat_id = int(item["chat_id"]), text=context.args[0])
 
 def msg(context):
     context.bot.send_message(chat_id=context.job.context, text='定时任务')
@@ -237,6 +240,7 @@ if __name__ == '__main__':
 
     # 其他小功能
     dispatcher.add_handler(CommandHandler("caps", caps))
+    dispatcher.add_handler(CommandHandler("speak", speak))
     dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CommandHandler("weather", weather, pass_job_queue=True))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
