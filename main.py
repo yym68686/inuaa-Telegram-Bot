@@ -28,13 +28,6 @@ admin = 917527833
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
-def start(update, context): # 当用户输入/start时，返回文本
-    user = update.effective_user
-    update.message.reply_html(
-        rf"Hi {user.mention_html()} 欢迎使用 🎉",
-        # reply_markup=ForceReply(selective=True),
-    )
-
 def toUTC(t):
     t2 = int(t[:2])
     if t2 - 8 < 0:
@@ -48,7 +41,12 @@ def toUTC(t):
 # In all other places characters 
 # _ * [ ] ( ) ~ ` > # + - = | { } . ! 
 # must be escaped with the preceding character '\'.
-def help(update, context):
+def start(update, context): # 当用户输入/start时，返回文本
+    user = update.effective_user
+    update.message.reply_html(
+        rf"Hi {user.mention_html()} 欢迎使用 🎉",
+        # reply_markup=ForceReply(selective=True),
+    )
     message = (
         "我是人见人爱的yym的小跟班\~\n\n"
         f"1\. 我可以为你在每天 {checktime} 自动打卡\n"
@@ -63,6 +61,123 @@ def help(update, context):
         "5\. 有 bug 可以联系 @yym68686"
     )
     update.message.reply_text(message, parse_mode='MarkdownV2')
+
+def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
+            # context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
+            return
+    body = {
+        'properties':{}
+    }
+    body = NotionDatabase.body_properties_input(body, 'StuID', 'title', StuID)
+    body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', password)
+    body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', cookie)
+    body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
+    body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
+    # body = NotionDatabase.body_properties_input(body, 'lastdate', 'rich_text', enddate)
+    result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
+    if (person == admin):
+        result = "用户更新：" + result
+    context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
+
+def check(update: Update, context: CallbackContext): # 添加自动打卡
+    if (len(context.args) == 2): # /check 后面必须是两个参数
+        message = (
+            f"欢迎使用自动打卡功能~\n\n"
+            f"将在每日{checktime}打卡\n\n"
+            f"请稍等哦，正在给您的信息添加到数据库~\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
+    else:
+        message = (
+            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+            f"请输入 `/check 学号 教务处密码`\n\n"
+            f"例如学号为 1234，密码是 123\n\n"
+            f"则输入 `/check 1234 123`\n\n"
+            f"👆点击上方命令复制格式\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+
+def daily(update: Update, context: CallbackContext):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if item["checkdaily"] == "1":
+            if int(item["chat_id"]) != admin:
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
+            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
+            if int(item["chat_id"]) != admin:
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+
+def dailysign():
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if item["checkdaily"] == "1":
+            if int(item["chat_id"]) != admin:
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
+            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
+            if int(item["chat_id"]) != admin:
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+
+def echoinfo(update: Update, context: CallbackContext):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    result = ""
+    for item in Stuinfo:
+        result += item["StuID"] + " " + item["password"] + "\n"
+    if (update.effective_chat.id != admin):
+        return
+    context.bot.send_message(chat_id=admin, text=result)
+
+def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
+    if (len(context.args) == 2): # /inuaa 后面必须是两个参数
+        context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
+        result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
+        context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+        adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
+    else:
+        message = (
+            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+            f"请输入 `/inuaa 学号 教务处密码`\n\n"
+            f"例如学号为 1234，密码是 123\n\n"
+            f"则输入 `/inuaa 1234 123`\n\n"
+            f"👆点击上方命令复制格式\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+
+def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
+    if (len(context.args) == 3): # /leave 后面必须是三个参数
+        if (context.args[0] not in raw):
+            message = (
+                f"本功能需要定制，请联系 @yym68686\n\n"
+                f"后续就可以直接使用一条命令自动申请出校啦\~\n\n"
+            )
+            context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+            return
+        context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...大约需要 40 秒")
+        result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
+        context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+    else:
+        message = (
+            f"格式错误哦\~，需要三个参数，注意学号 密码 出校日期之间的空格\n\n"
+            f"请输入 `/leave 学号 教务处密码 出校日期`\n\n"
+            f"例如学号为 1234，密码是 123，出校日期 `2022\-9\-6`\n\n"
+            f"则输入 `/leave 1234 123 2022\-9\-6`\n\n"
+            f"日期务必用短横线隔开，👆点击上方命令复制格式\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+
+# 小功能
+def weather(update, context):
+    context.job_queue.run_daily(msg, datetime.time(hour=1, minute=56, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
+
+def msg(context):
+    context.bot.send_message(chat_id=context.job.context, text='定时任务')
 
 def echo(update, context):
     update.message.reply_text(update.message.text)
@@ -96,144 +211,6 @@ def caps(update: Update, context: CallbackContext): # 小的测试功能，也�
     text_caps = ' '.join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
-def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
-    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    for item in Stuinfo:
-        if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
-            # context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
-            return
-    body = {
-        'properties':{}
-    }
-    body = NotionDatabase.body_properties_input(body, 'StuID', 'title', StuID)
-    body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', password)
-    body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', cookie)
-    body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
-    body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
-    # body = NotionDatabase.body_properties_input(body, 'lastdate', 'rich_text', enddate)
-    result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
-    if (person == admin):
-        result = "用户更新：" + result
-    context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
-
-def check(update: Update, context: CallbackContext): # 添加自动打卡
-    if (len(context.args) == 2): # /check 后面必须是两个参数
-        message = (
-            f"欢迎使用自动打卡功能~\n\n"
-            f"将在每日{checktime}打卡\n\n"
-            f"请稍等哦，正在给您的信息添加到数据库~\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
-        # cookie = GetCookie(context.args[0], context.args[1])
-        # print(cookie)
-        # now_time = datetime.datetime.now()
-        # end_time = now_time + datetime.timedelta(days = -1)
-        # # 前一天时间只保留 年-月-日
-        # enddate = end_time.strftime('%Y-%m-%d') #格式化输出
-        # today = time.strftime("%Y-%m-%d",time.localtime(time.time()))
-        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
-    else:
-        message = (
-            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 `/check 学号 教务处密码`\n\n"
-            f"例如学号为 1234，密码是 123\n\n"
-            f"则输入 `/check 1234 123`\n\n"
-            f"👆点击上方命令复制格式\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
-
-def daily(update: Update, context: CallbackContext):
-    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    # print(Stuinfo)
-    # seen = set()
-    # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
-    for item in Stuinfo:
-        if item["checkdaily"] == "1":
-            if int(item["chat_id"]) != admin:
-                updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
-            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
-            if int(item["chat_id"]) != admin:
-                updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
-            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
-
-def dailysign():
-    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    # print(Stuinfo)
-    # seen = set()
-    # Stuinfo = [x for x in Stuinfo if frozenset(x) not in seen and not seen.add(frozenset(x))]
-    for item in Stuinfo:
-        if item["checkdaily"] == "1":
-            if int(item["chat_id"]) != admin:
-                updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
-            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
-            if int(item["chat_id"]) != admin:
-                updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
-            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
-
-def weather(update, context):
-    context.job_queue.run_daily(msg, datetime.time(hour=1, minute=56, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
-
-def msg(context):
-    context.bot.send_message(chat_id=context.job.context, text='定时任务')
-
-def echoinfo(update: Update, context: CallbackContext):
-    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    result = ""
-    for item in Stuinfo:
-        result += item["StuID"] + " " + item["password"] + "\n"
-    if (update.effective_chat.id != admin):
-        return
-    context.bot.send_message(chat_id=admin, text=result)
-
-def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
-    if (len(context.args) == 2): # /inuaa 后面必须是两个参数
-        context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
-        result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
-        context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
-        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
-        adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
-    else:
-        message = (
-            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 `/inuaa 学号 教务处密码`\n\n"
-            f"例如学号为 1234，密码是 123\n\n"
-            f"则输入 `/inuaa 1234 123`\n\n"
-            f"👆点击上方命令复制格式\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
-
-def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
-
-    if (len(context.args) == 3): # /leave 后面必须是三个参数
-        if (context.args[0] not in raw):
-            message = (
-                f"本功能需要定制，请联系 @yym68686\n\n"
-                f"后续就可以直接使用一条命令自动申请出校啦\~\n\n"
-            )
-            context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
-            return
-        context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...大约需要 40 秒")
-        result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
-        context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
-        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
-    else:
-        message = (
-            f"格式错误哦\~，需要三个参数，注意学号 密码 出校日期之间的空格\n\n"
-            f"请输入 `/leave 学号 教务处密码 出校日期`\n\n"
-            f"例如学号为 1234，密码是 123，出校日期 `2022\-9\-6`\n\n"
-            f"则输入 `/leave 1234 123 2022\-9\-6`\n\n"
-            f"日期务必用短横线隔开，👆点击上方命令复制格式\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
-
-def downloader(update, context):
-    file = context.bot.getFile(update.message.sticker.file_id)
-    context.bot.send_sticker(chat_id=update.message.chat_id, sticker=file)
-    # context.bot.get_file(update.message.document).download()
-    # writing to a custom file
-    # with open("custom/file.doc", 'wb') as f:
-        # context.bot.get_file(update.message.document).download(out=f)
-
 if __name__ == '__main__':
     if MODE == "dev": # 本地调试，需要挂代理，这里使用的是Clash
         updater = Updater(TOKEN, use_context=True, request_kwargs={
@@ -247,16 +224,19 @@ if __name__ == '__main__':
 
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help))
-    dispatcher.add_handler(CommandHandler("caps", caps))
-    dispatcher.add_handler(CommandHandler("Inline", Inline))
+
+    # inuaa 相关功能
+    dispatcher.add_handler(CommandHandler("inuaa", inuaa)) # 当用户输入/inuaa时，调用inuaa()函数
     dispatcher.add_handler(CommandHandler("check", check))
     dispatcher.add_handler(CommandHandler("echoinfo", echoinfo))
     dispatcher.add_handler(CommandHandler("dailysign", daily))
     dispatcher.add_handler(CommandHandler("leave", leave))
+
+    # 其他小功能
+    dispatcher.add_handler(CommandHandler("caps", caps))
+    dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CommandHandler("weather", weather, pass_job_queue=True))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
-    dispatcher.add_handler(CommandHandler("inuaa", inuaa)) # 当用户输入/inuaa时，调用inuaa()函数
     dispatcher.add_handler(MessageHandler(Filters.document, downloader))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     dispatcher.add_error_handler(error)
