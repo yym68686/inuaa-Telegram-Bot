@@ -40,7 +40,10 @@ async def getJSESSIONID(username, password):
     print(cookie)
     # 关闭浏览器
     await browser.close()
-    return cookie[1]["value"]
+    if (cookie[0]["name"] == "JSESSIONID")
+        return cookie[0]["value"]
+    else
+        return cookie[1]["value"]
 
 def POSTraw(username, password, leavetime):
     # 变量配置
@@ -64,26 +67,6 @@ def POSTraw(username, password, leavetime):
     jsessionID = loop.run_until_complete(getJSESSIONID(username, password))
     loop.close()
     print("jsessionID", jsessionID)
-    # if (len(jsessionID) < 34):
-        # print("Get jsessionID error!")
-        # if (_ == 2):
-            # exit(0)
-    # else:
-        # break
-    # for _ in range(3):
-    #     new_loop = asyncio.new_event_loop()
-    #     asyncio.set_event_loop(new_loop)
-    #     loop = asyncio.get_event_loop()
-    #     # task = asyncio.ensure_future()
-    #     jsessionID = loop.run_until_complete(getJSESSIONID(username, password))
-    #     loop.close()
-    #     if (len(jsessionID) < 34):
-    #         print("Get jsessionID error!")
-    #         if (_ == 2):
-    #             exit(0)
-    #     else:
-    #         print("jsessionID", jsessionID)
-    #         break
     # 0515000 航天学院
     # 0518000 长空学院
     Studept = "0501000"
