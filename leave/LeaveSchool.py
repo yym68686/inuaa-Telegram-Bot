@@ -1,5 +1,7 @@
 import re
+import os
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 import time
 import asyncio
 import leave.HackRequests as HackRequests
@@ -28,17 +30,14 @@ async def getJSESSIONID(username, password):
     await page.setJavaScriptEnabled(enabled=True)
     res = await page.goto('https://ehall.nuaa.edu.cn/infoplus/form/YQFKXSFXLSCX_CS/start?theme=nuaa_new')
     await page.waitForSelector("#login_submit")
-    content = await page.content()
-    print(content)
     await page.type('#username', username)
     await page.type('#password', password)
     await page.click('#login_submit')
     await asyncio.sleep(5)
     await page.waitForSelector("#preview_start_button")
-    content = await page.content()
-    print(content)
     # 打印页面cookies
     cookie = await page.cookies()
+    print(cookie)
     # 关闭浏览器
     await browser.close()
     return cookie[1]["value"]
