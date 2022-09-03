@@ -82,24 +82,6 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
         result = "用户更新：" + result
     context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
 
-def check(update: Update, context: CallbackContext): # 添加自动打卡
-    if (len(context.args) == 2): # /check 后面必须是两个参数
-        message = (
-            f"欢迎使用自动打卡功能~\n\n"
-            f"将在每日{checktime}打卡\n\n"
-            f"请稍等哦，正在给您的信息添加到数据库~\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
-        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
-    else:
-        message = (
-            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 `/check 学号 教务处密码`\n\n"
-            f"例如学号为 1234，密码是 123\n\n"
-            f"则输入 `/check 1234 123`\n\n"
-            f"👆点击上方命令复制格式\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def daily(update: Update, context: CallbackContext):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
@@ -148,6 +130,27 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa �
             f"👆点击上方命令复制格式\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+
+def check(update: Update, context: CallbackContext): # 添加自动打卡
+    print("111")
+    if (len(context.args) == 2): # /check 后面必须是两个参数
+        message = (
+            f"欢迎使用自动打卡功能~\n\n"
+            f"将在每日{checktime}打卡\n\n"
+            f"请稍等哦，正在给您的信息添加到数据库~\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
+    else:
+        message = (
+            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+            f"请输入 `/check 学号 教务处密码`\n\n"
+            f"例如学号为 1234，密码是 123\n\n"
+            f"则输入 `/check 1234 123`\n\n"
+            f"👆点击上方命令复制格式\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+    print("222")
 
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
     if (len(context.args) == 3): # /leave 后面必须是三个参数
