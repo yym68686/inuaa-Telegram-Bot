@@ -33,16 +33,15 @@ async def getJSESSIONID(username, password):
     await page.type('#username', username)
     await page.type('#password', password)
     await page.click('#login_submit')
-    await asyncio.sleep(5)
     await page.waitForSelector("#preview_start_button")
     # 打印页面cookies
     cookie = await page.cookies()
     print(cookie)
     # 关闭浏览器
     await browser.close()
-    if (cookie[0]["name"] == "JSESSIONID")
+    if (cookie[0]["name"] == "JSESSIONID"):
         return cookie[0]["value"]
-    else
+    else:
         return cookie[1]["value"]
 
 def POSTraw(username, password, leavetime):
