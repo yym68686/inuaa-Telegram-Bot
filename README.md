@@ -23,6 +23,8 @@ https://yym68686.top/TelegramBot
 
 自助申请，自己审批，摆脱辅导员！
 
+好的大学没有围墙！
+
 TODO：
 
 两个 POST 对比：
