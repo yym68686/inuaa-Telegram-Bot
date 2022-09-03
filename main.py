@@ -132,7 +132,6 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa �
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def check(update: Update, context: CallbackContext): # 添加自动打卡
-    print("111")
     if (len(context.args) == 2): # /check 后面必须是两个参数
         message = (
             f"欢迎使用自动打卡功能~\n\n"
@@ -150,7 +149,6 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
             f"👆点击上方命令复制格式\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
-    print("222")
 
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
     if (len(context.args) == 3): # /leave 后面必须是三个参数
