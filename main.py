@@ -237,7 +237,6 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CommandHandler("weather", weather, pass_job_queue=True))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
-    dispatcher.add_handler(MessageHandler(Filters.document, downloader))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     dispatcher.add_error_handler(error)
 
