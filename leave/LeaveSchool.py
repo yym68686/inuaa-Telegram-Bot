@@ -31,7 +31,7 @@ async def getJSESSIONID(username, password):
     await page.type('#username', username)
     await page.type('#password', password)
     await page.click('#login_submit')
-    await asyncio.sleep(2)
+    await asyncio.sleep(5)
     await page.waitForSelector("#preview_start_button")
     # 打印页面cookies
     cookie = await page.cookies()
