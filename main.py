@@ -10,6 +10,7 @@ import schedule
 import NotionDatabase
 from nuaa import startinuaa, GetCookie
 from leave.LeaveSchool import POSTraw
+from leave.config import raw
 from threading import Thread
 from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update
@@ -55,8 +56,11 @@ def help(update, context):
         "这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
         "2\. 你也可以手动打卡，记得每天发一句 `/inuaa ID password` 发给我哦\~\n"
         "这个功能不会存密码\n\n"
-        "3\. 欢迎访问 https://github\.com/yym68686/inuaa\-Telegram\-Bot 查看源码\n\n"
-        "4\. 有 bug 可以联系 @yym68686"
+        "3\. 2022\.9\.3 新增功能自动申请出校，自己申请，自己审批，再也不需要辅导员啦\！\n"
+        "自动审批出校功能需要定制，请联系 @yym68686，输入 `/leave` 查看命令格式\~\n"
+        "此功能不存储密码，后续考虑连接数据库\n\n"
+        "4\. 欢迎访问 https://github\.com/yym68686/inuaa\-Telegram\-Bot 查看源码\n\n"
+        "5\. 有 bug 可以联系 @yym68686"
     )
     update.message.reply_text(message, parse_mode='MarkdownV2')
 
@@ -166,12 +170,6 @@ def dailysign():
                 updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
             updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
 
-# def schedule_checker():
-#     while True:
-#         schedule.run_pending()
-#         time.sleep(1)
-        # await asyncio.sleep(1)
-
 def weather(update, context):
     context.job_queue.run_daily(msg, datetime.time(hour=1, minute=56, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
 
@@ -205,18 +203,16 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa �
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
+
     if (len(context.args) == 3): # /leave 后面必须是三个参数
-        context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...")
-        # new_loop = asyncio.new_event_loop()
-        # asyncio.set_event_loop(new_loop)
-        # loop = asyncio.get_event_loop()
-        # # task = asyncio.ensure_future()
-        # result = loop.run_until_complete(POSTraw(context.args[0], context.args[1], context.args[2]))
-        # loop.close()
-        # t = Thread(target=POSTraw,args=(context.args[0], context.args[1], context.args[2],))    #开启新的线程去启动事件循环
-        # t.start()
-        # result ="77"
-        # jsessionID = POSTraw(context.args[0], context.args[1], context.args[2]))
+        if (context.args[0] not in raw):
+            message = (
+                f"本功能需要定制，请联系 @yym68686\n\n"
+                f"后续就可以直接使用一条命令自动申请出校啦\~\n\n"
+            )
+            context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+            return
+        context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...大约需要 40 秒")
         result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
         context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
