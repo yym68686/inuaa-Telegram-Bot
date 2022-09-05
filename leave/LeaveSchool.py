@@ -103,7 +103,7 @@ def POSTraw(username, password, leavetime):
     test_str = hh.text()
     print(test_str)
     if ("SUCCEED" in test_str):
-        return "已成功申请！出校愉快~"
+        return "已成功申请！记得及时在i南航上通过申请哦，出校愉快~"
     else:
         return "嘤嘤嘤~，出错啦！"
 
