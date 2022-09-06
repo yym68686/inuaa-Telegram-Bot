@@ -33,10 +33,7 @@ async def getJSESSIONID(username, password):
     await page.type('#username', username)
     await page.type('#password', password)
     await page.click('#login_submit')
-    try:
-        await page.waitForSelector("#preview_start_button")
-    except TimeoutError as e:
-        return "TimeoutError"
+    await page.waitForSelector("#preview_start_button")
 
     # 打印页面cookies
     cookie = await page.cookies()
@@ -70,8 +67,6 @@ def POSTraw(username, password, leavetime):
     jsessionID = loop.run_until_complete(getJSESSIONID(username, password))
     loop.close()
     print("jsessionID", jsessionID)
-    if ("TimeoutError" in jsessionID):
-        return "嘤嘤嘤~，出错啦！稍后重试一下，也可能是密码错误，换个密码试试"
     # 0515000 航天学院
     # 0518000 长空学院
     Studept = "0501000"

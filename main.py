@@ -27,6 +27,26 @@ admin = 917527833
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
+def catch_error(f):
+    @wraps(f)
+    def wrap(bot, update):
+        logger.info("User {user} sent {message}".format(user=update.message.from_user.username, message=update.message.text))
+        try:
+            return f(bot, update)
+        except Exception as e:
+            # Add info to error tracking
+            client.user_context({
+                "username": update.message.from_user.username,
+                "message": update.message.text
+            })
+
+            client.captureException()
+            logger.error(str(e))
+            bot.send_message(chat_id=update.message.chat_id,
+                             text="An error occured ...")
+
+    return wrap
+
 def toUTC(t):
     t2 = int(t[:2])
     if t2 - 8 < 0:
@@ -150,6 +170,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
+@catch_error
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
     if (len(context.args) == 3): # /leave 后面必须是三个参数
         if (context.args[0] not in raw):
