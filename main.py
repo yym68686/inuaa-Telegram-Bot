@@ -28,7 +28,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(level
 logger = logging.getLogger()
 
 def catch_error(f):
-    @wraps(f)
     def wrap(bot, update):
         logger.info("User {user} sent {message}".format(user=update.message.from_user.username, message=update.message.text))
         try:
@@ -39,12 +38,9 @@ def catch_error(f):
                 "username": update.message.from_user.username,
                 "message": update.message.text
             })
-
             client.captureException()
             logger.error(str(e))
-            bot.send_message(chat_id=update.message.chat_id,
-                             text="An error occured ...")
-
+            bot.send_message(chat_id=update.message.chat_id, text="An error occured ...")
     return wrap
 
 def toUTC(t):
