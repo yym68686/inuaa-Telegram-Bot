@@ -27,22 +27,6 @@ admin = 917527833
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
-def catch_error(f):
-    def wrap(bot, update):
-        logger.info("User {user} sent {message}".format(user=update.message.from_user.username, message=update.message.text))
-        try:
-            return f(bot, update)
-        except Exception as e:
-            # Add info to error tracking
-            client.user_context({
-                "username": update.message.from_user.username,
-                "message": update.message.text
-            })
-            client.captureException()
-            logger.error(str(e))
-            bot.send_message(chat_id=update.message.chat_id, text="An error occured ...")
-    return wrap
-
 def toUTC(t):
     t2 = int(t[:2])
     if t2 - 8 < 0:
@@ -166,7 +150,6 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
-@catch_error
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
     if (len(context.args) == 3): # /leave 后面必须是三个参数
         if (context.args[0] not in raw):
@@ -227,6 +210,12 @@ def keyboard_callback(update: Update, context: CallbackContext): #4
 
 def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
+    if ("timeout" in context.error or "TIMED_OUT" in context.error):
+        message = (
+            f"用户名或密码错误！请重试\n\n"
+            f"无法申请成功，请联系 @yym68686\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def unknown(update: Update, context: CallbackContext): # 当用户输入未知命令时，返回文本
     context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
