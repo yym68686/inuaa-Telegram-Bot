@@ -176,12 +176,12 @@ def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学
 # 小功能
 def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
-    # if ("timeout" in context.error or "TIMED_OUT" in context.error):
-    #     message = (
-    #         f"用户名或密码错误！请重试\n\n"
-    #         f"无法申请成功，请联系 @yym68686\n\n"
-    #     )
-    #     context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+    if ("timeout" in str(context.error) or "TIMED_OUT" in str(context.error)):
+        message = (
+            f"用户名或密码错误！请重试\n\n"
+            f"若无法申请成功，请联系 @yym68686\n\n"
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 def weather(update, context):
     context.job_queue.run_daily(msg, datetime.time(hour=1, minute=56, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
