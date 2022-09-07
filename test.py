@@ -1,8 +1,19 @@
-import datetime
+def decorator1(func):
+    def wrapper(*args, **kwargs):
+        print("the decoretor is decoretor1 !")
+        func(*args, **kwargs)
+    return wrapper
 
-todaydate = datetime.datetime.strptime(str(datetime.datetime.now().date()), '%Y-%m-%d')
-inputdate = datetime.datetime.strptime("2022-9-07", '%Y-%m-%d')
-if inputdate >= todaydate:
-    print(True)
-else:
-    print(False)
+def decorator2(func):
+    def wrapper(*args, **kwargs):
+        print("the decoretor is decoretor2 !")
+        func(*args, **kwargs)
+    return wrapper
+
+@decorator1
+@decorator2
+def myfun(func_name):
+    print('This is a function named :', func_name)
+
+
+myfun('myfun')
