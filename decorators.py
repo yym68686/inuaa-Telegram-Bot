@@ -1,6 +1,6 @@
+# 判断参数是否为三个
 def check_Number_of_parameters(func):
     def wrapper(*args, **kwargs):
-        # 判断参数是否为三个
         if (len(args[1].args) != 3):
             message = (
                 f"格式错误哦\~，需要三个参数，注意学号 密码 出校日期之间的空格\n\n"
@@ -14,9 +14,10 @@ def check_Number_of_parameters(func):
         return func(*args, **kwargs)
     return wrapper
 
+# 判断是否是授权用户
 def check_Authorization(func):
     def wrapper(*args, **kwargs):
-        # 判断是否是授权用户
+        from leave.config import raw
         if (args[1].args[0] not in raw):
             message = (
                 f"本功能需要定制，请联系 @yym68686\n\n"
@@ -27,9 +28,9 @@ def check_Authorization(func):
         return func(*args, **kwargs)
     return wrapper
 
+# 判断日期格式是否正确
 def check_Date_format(func):
     def wrapper(*args, **kwargs):
-        # 判断日期格式是否正确
         import re
         regex = r"((((19|20)\d{2})-(0?(1|[3-9])|1[012])-(0?[1-9]|[12]\d|30))|(((19|20)\d{2})-(0?[13578]|1[02])-31)|(((19|20)\d{2})-0?2-(0?[1-9]|1\d|2[0-8]))|((((19|20)([13579][26]|[2468][048]|0[48]))|(2000))-0?2-29))$"
         leaveTime = re.findall(regex, args[1].args[2])
@@ -44,9 +45,9 @@ def check_Date_format(func):
         return func(*args, **kwargs)
     return wrapper
 
+# 判断日期是否大于等于当前日期
 def check_Date_range(func):
     def wrapper(*args, **kwargs):
-        # 判断日期是否大于等于当前日期
         todaydate = datetime.datetime.strptime(str(datetime.datetime.now().date()), '%Y-%m-%d')
         inputdate = datetime.datetime.strptime(args[1].args[2], '%Y-%m-%d')
         if inputdate < todaydate:
