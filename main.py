@@ -13,7 +13,7 @@ from leave.LeaveSchool import POSTraw
 from threading import Thread
 from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
-from config import ADMIN
+from config import admin
 
 TOKEN = os.getenv("TOKEN") # 从环境变量自动获取telegram bot Token
 MODE = os.getenv("MODE")
@@ -21,7 +21,6 @@ PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 DATABASEID = os.getenv("DATABASEID")
 checktime = '00:59'
-admin = ADMIN
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()

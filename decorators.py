@@ -95,8 +95,7 @@ def check_Date_range(func):
 # 判断是否是管理员
 def Authorization(func):
     def wrapper(*args, **kwargs):
-        from config import ADMIN
-        admin = ADMIN
+        from config import admin
         if (args[0].effective_chat.id != admin):
             message = (
                 f"无权访问！\n\n"
