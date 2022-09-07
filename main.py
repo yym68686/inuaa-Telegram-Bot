@@ -11,7 +11,6 @@ import NotionDatabase
 import decorators
 from nuaa import startinuaa, GetCookie
 from leave.LeaveSchool import POSTraw
-from leave.config import raw
 from threading import Thread
 from telegram import ParseMode
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update
@@ -132,6 +131,7 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa �
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
+
 def check(update: Update, context: CallbackContext): # 添加自动打卡
     if (len(context.args) == 2): # /check 后面必须是两个参数
         message = (
@@ -193,9 +193,6 @@ def error(update, context):
             f"若无法申请成功，请联系 @yym68686\n\n"
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
-
-def weather(update, context):
-    context.job_queue.run_daily(msg, datetime.time(hour=1, minute=56, tzinfo=pytz.timezone('Asia/Shanghai')), days=(0, 1, 2, 3, 4, 5, 6), context=admin)
 
 def speak(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
@@ -259,7 +256,6 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("caps", caps))
     dispatcher.add_handler(CommandHandler("speak", speak))
     dispatcher.add_handler(CommandHandler("Inline", Inline))
-    dispatcher.add_handler(CommandHandler("weather", weather, pass_job_queue=True))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     dispatcher.add_error_handler(error)
@@ -274,5 +270,4 @@ if __name__ == '__main__':
     while True:
         schedule.run_pending()
         time.sleep(1)
-    # Thread(target=schedule_checker).start() 
     updater.idle()
