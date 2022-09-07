@@ -1,5 +1,5 @@
 # 判断参数是否为三个
-def check_Number_of_parameters(func):
+def check_leave_Number_of_parameters(func):
     def wrapper(*args, **kwargs):
         if (len(args[1].args) != 3):
             message = (
@@ -8,6 +8,38 @@ def check_Number_of_parameters(func):
                 f"例如学号为 1234，密码是 123，出校日期 `2022\-9\-6`\n\n"
                 f"则输入 `/leave 1234 123 2022\-9\-6`\n\n"
                 f"日期务必用短横线隔开，👆点击上方命令复制格式\n\n"
+            )
+            args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
+            return
+        return func(*args, **kwargs)
+    return wrapper
+
+# 判断参数是否为两个
+def check_check_Number_of_parameters(func):
+    def wrapper(*args, **kwargs):
+        if (len(args[1].args) != 2):
+            message = (
+                f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+                f"请输入 `/check 学号 教务处密码`\n\n"
+                f"例如学号为 1234，密码是 123\n\n"
+                f"则输入 `/check 1234 123`\n\n"
+                f"👆点击上方命令复制格式\n\n"
+            )
+            args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
+            return
+        return func(*args, **kwargs)
+    return wrapper
+
+# 判断参数是否为两个
+def check_inuaa_Number_of_parameters(func):
+    def wrapper(*args, **kwargs):
+        if (len(args[1].args) != 2):
+            message = (
+                f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
+                f"请输入 `/inuaa 学号 教务处密码`\n\n"
+                f"例如学号为 1234，密码是 123\n\n"
+                f"则输入 `/inuaa 1234 123`\n\n"
+                f"👆点击上方命令复制格式\n\n"
             )
             args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
             return

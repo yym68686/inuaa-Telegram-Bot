@@ -37,7 +37,7 @@ def toUTC(t):
         t = "0" + t
     return t
 
-# In all other places characters 
+# In all other places characters
 # _ * [ ] ( ) ~ ` > # + - = | { } . ! 
 # must be escaped with the preceding character '\'.
 def start(update, context): # 当用户输入/start时，返回文本
@@ -83,7 +83,7 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
     context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
 
 
-def daily(update: Update, context: CallbackContext):
+def daily(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     for item in Stuinfo:
         if item["checkdaily"] == "1":
@@ -105,7 +105,7 @@ def dailysign():
                 updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
             updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
 
-def echoinfo(update: Update, context: CallbackContext):
+def echoinfo(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     result = ""
     for item in Stuinfo:
@@ -114,44 +114,25 @@ def echoinfo(update: Update, context: CallbackContext):
         return
     context.bot.send_message(chat_id=admin, text=result)
 
+@decorators.check_inuaa_Number_of_parameters
 def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
-    if (len(context.args) == 2): # /inuaa 后面必须是两个参数
-        context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
-        result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
-        context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
-        context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
-        adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
-    else:
-        message = (
-            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 `/inuaa 学号 教务处密码`\n\n"
-            f"例如学号为 1234，密码是 123\n\n"
-            f"则输入 `/inuaa 1234 123`\n\n"
-            f"👆点击上方命令复制格式\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+    context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
+    result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
+    context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+    context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+    adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
 
-
+@decorators.check_check_Number_of_parameters
 def check(update: Update, context: CallbackContext): # 添加自动打卡
-    if (len(context.args) == 2): # /check 后面必须是两个参数
-        message = (
-            f"欢迎使用自动打卡功能~\n\n"
-            f"将在每日{checktime}打卡\n\n"
-            f"请稍等哦，正在给您的信息添加到数据库~\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
-        adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
-    else:
-        message = (
-            f"格式错误哦\~，需要两个参数，注意学号用户名之间的空格\n\n"
-            f"请输入 `/check 学号 教务处密码`\n\n"
-            f"例如学号为 1234，密码是 123\n\n"
-            f"则输入 `/check 1234 123`\n\n"
-            f"👆点击上方命令复制格式\n\n"
-        )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+    message = (
+        f"欢迎使用自动打卡功能~\n\n"
+        f"将在每日{checktime}打卡\n\n"
+        f"请稍等哦，正在给您的信息添加到数据库~\n\n"
+    )
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+    adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
 
-@decorators.check_Number_of_parameters
+@decorators.check_leave_Number_of_parameters
 @decorators.check_Authorization
 @decorators.check_Date_format
 @decorators.check_Date_range
@@ -160,29 +141,6 @@ def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学
     result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
     context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
-
-# def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
-#     if (len(context.args) == 3): # /leave 后面必须是三个参数
-#         if (context.args[0] not in raw):
-#             message = (
-#                 f"本功能需要定制，请联系 @yym68686\n\n"
-#                 f"后续就可以直接使用一条命令自动申请出校啦\~\n\n"
-#             )
-#             context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
-#             return
-#         context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...大约需要 40 秒")
-#         result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
-#         context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
-#         context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
-#     else:
-#         message = (
-#             f"格式错误哦\~，需要三个参数，注意学号 密码 出校日期之间的空格\n\n"
-#             f"请输入 `/leave 学号 教务处密码 出校日期`\n\n"
-#             f"例如学号为 1234，密码是 123，出校日期 `2022\-9\-6`\n\n"
-#             f"则输入 `/leave 1234 123 2022\-9\-6`\n\n"
-#             f"日期务必用短横线隔开，👆点击上方命令复制格式\n\n"
-#         )
-#         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
 # 小功能
 def error(update, context):
