@@ -171,7 +171,7 @@ def checkformat(func):
                 f"本功能需要定制，请联系 @yym68686\n\n"
                 f"后续就可以直接使用一条命令自动申请出校啦\~\n\n"
             )
-            args[1].bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+            args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
             return
 
         # 判断日期格式是否正确
@@ -184,7 +184,7 @@ def checkformat(func):
                 f"日期务必用短横线隔开，👇点击下方命令复制格式\n\n"
                 f"`/leave 1234 123 2022\-9\-6`\n\n"
             )
-            args[1].bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+            args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
             return
 
         # 判断日期是否大于等于当前日期
@@ -194,7 +194,7 @@ def checkformat(func):
             message = (
                 f"申请日期不得小于当前日期！\n\n"
             )
-            args[1].bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
+            args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
             return
         return func(*args, **kwargs)
     return wrapper
