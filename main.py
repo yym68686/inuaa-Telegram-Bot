@@ -1,8 +1,7 @@
-# git add . && git commit -m "modify main.py" && git push origin main
+# git add . && git commit -m "add checkformat function" && git push origin $(git rev-parse --abbrev-ref HEAD)
 # heroku logs --tail -a yymtg
 import os
 import sys
-# import html
 import time
 import asyncio
 import logging, datetime, pytz
@@ -82,18 +81,6 @@ def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
         result = "用户更新：" + result
     context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
 
-
-def daily(update, context):
-    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    for item in Stuinfo:
-        if item["checkdaily"] == "1":
-            if int(item["chat_id"]) != admin:
-                updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
-            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
-            if int(item["chat_id"]) != admin:
-                updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
-            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
-
 def dailysign():
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     for item in Stuinfo:
@@ -105,6 +92,10 @@ def dailysign():
                 updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
             updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
 
+def daily(update, context):
+    dailysign()
+
+@decorators.Authorization
 def echoinfo(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     result = ""
@@ -158,9 +149,6 @@ def speak(update, context):
         if item["checkdaily"] == "1":
             updater.bot.send_message(chat_id = int(item["chat_id"]), text=context.args[0])
 
-def msg(context):
-    context.bot.send_message(chat_id=context.job.context, text='定时任务')
-
 def echo(update, context):
     update.message.reply_text(update.message.text)
 
@@ -185,10 +173,6 @@ def keyboard_callback(update: Update, context: CallbackContext): #4
 def unknown(update: Update, context: CallbackContext): # 当用户输入未知命令时，返回文本
     context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
 
-def caps(update: Update, context: CallbackContext): # 小的测试功能，也是官方示例，将用户参数转化为大写
-    text_caps = ' '.join(context.args).upper()
-    context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
-
 if __name__ == '__main__':
     if MODE == "dev": # 本地调试，需要挂代理，这里使用的是Clash
         updater = Updater(TOKEN, use_context=True, request_kwargs={
@@ -211,7 +195,6 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("leave", leave))
 
     # 其他小功能
-    dispatcher.add_handler(CommandHandler("caps", caps))
     dispatcher.add_handler(CommandHandler("speak", speak))
     dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))

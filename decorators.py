@@ -91,3 +91,15 @@ def check_Date_range(func):
             return
         return func(*args, **kwargs)
     return wrapper
+
+# 判断是否是管理员
+def Authorization(func):
+    def wrapper(*args, **kwargs):
+        if (args[0].effective_chat.id != admin):
+            message = (
+                f"无权访问！\n\n"
+            )
+            args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
+            return
+        return func(*args, **kwargs)
+    return wrapper
