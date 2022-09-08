@@ -7,13 +7,11 @@ import sys
 import re
 # from send_mail import send_mail
 
-
 # 如果发包过快会造成502，如果给多个同学打卡请注意一下请求速度
 try_times = 8
 
 # 每次requests请求的延迟(s秒)，太低会封IP
 delay = 3
-
 
 '''
 教务处的垃圾命名规则
