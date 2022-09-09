@@ -99,7 +99,7 @@ def echoinfo(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
     result = ""
     for item in Stuinfo:
-        result += item["StuID"] + " " + item["password"] + "\n"
+        result += "%-10s %s" % (item["StuID"], item["password"])  + "\n"
     if (update.effective_chat.id != admin):
         return
     context.bot.send_message(chat_id=admin, text=result)
@@ -142,11 +142,15 @@ def error(update, context):
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
-def speak(update, context):
+@decorators.Authorization
+def notice(update, context):
     Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
-    for item in Stuinfo:
-        if item["checkdaily"] == "1":
-            updater.bot.send_message(chat_id = int(item["chat_id"]), text=context.args[0])
+    if (len(context.args) == 1):
+        for item in Stuinfo:
+            if item["checkdaily"] == "1":
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text=context.args[0])
+    if (len(context.args) == 2):
+        updater.bot.send_message(chat_id = int(context.args[0]), text=context.args[1])
 
 def echo(update, context):
     update.message.reply_text(update.message.text)
@@ -194,7 +198,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("leave", leave))
 
     # 其他小功能
-    dispatcher.add_handler(CommandHandler("speak", speak))
+    dispatcher.add_handler(CommandHandler("notice", notice))
     dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
