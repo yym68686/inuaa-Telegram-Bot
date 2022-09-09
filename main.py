@@ -202,6 +202,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler("Inline", Inline))
     dispatcher.add_handler(CallbackQueryHandler(keyboard_callback))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
+    dispatcher.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
     dispatcher.add_error_handler(error)
 
     if MODE == "dev": # 本地调试
