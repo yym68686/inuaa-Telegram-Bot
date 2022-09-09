@@ -153,7 +153,7 @@ def notice(update, context):
         updater.bot.send_message(chat_id = int(context.args[0]), text=context.args[1])
 
 def echo(update, context):
-    updater.bot.send_message(chat_id = admin, text=update.message.text)
+    updater.bot.send_message(chat_id = admin, text= str(update.effective_chat.id) + " " + update.message.text)
     # update.message.reply_text(update.message.text)
 
 def Inline(update: Update, context: CallbackContext):
