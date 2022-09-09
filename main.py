@@ -12,7 +12,7 @@ from nuaa import startinuaa, GetCookie
 from leave.LeaveSchool import POSTraw
 from threading import Thread
 from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler, filters
 from config import admin
 
 TOKEN = os.getenv("TOKEN") # 从环境变量自动获取telegram bot Token
