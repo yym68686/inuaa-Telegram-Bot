@@ -95,7 +95,6 @@ def POSTraw(username, password, leavetime):
             break
 
     # 使用 POST 请求体发送离校申请
-
     # 获取离校日期时间戳
     postraw = raw[username]["raw"]
     fieldAfdy = raw[username]["fieldAfdy"]
