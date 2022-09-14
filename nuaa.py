@@ -133,11 +133,8 @@ def get_uid_id(cookies):
                 'https://m.nuaa.edu.cn/ncov/wap/default', cookies=cookies)
             response.encoding = 'utf-8'
 
-            # print(response.text)
-
             uid = re.search(r'"uid":"([0-9]*)"', response.text).group(1)
             id = re.search(r'"id":([0-9]*)', response.text).group(1)
-            # print(uid, id)
             return uid,id
         except Exception as e:
             print(e)
@@ -155,21 +152,16 @@ def login(login_id, login_password):
         try:
             time.sleep(delay)
             r = requests.get('https://m.nuaa.edu.cn/uc/wap/login', cookies=cookies)
-            # print('get login page:', r.status_code)
            
             cookies = dict(r.cookies)
-            print(dict(r.cookies))
-            # exit(0)
-
+            # print(dict(r.cookies))
 
             time.sleep(delay)
             r = requests.get('https://m.nuaa.edu.cn/uc/wap/login/check', cookies=cookies, data='username={}&password={}'.format(login_id, login_password))
-            # print('login...:', r.status_code)
             if ("账户或密码错误" in r.text):
                 return "账户或密码错误", '', ''
             cookies.update(dict(r.cookies))
 
-            # headers['Cookie'] = cookie
             uid, id = get_uid_id(cookies)
             return cookies, uid, id
         except Exception as e:
@@ -255,8 +247,6 @@ def sign(user):
             }
             time.sleep(delay)
             r = requests.post('https://m.nuaa.edu.cn/ncov/wap/default/save', data=data, cookies=user['cookie'])
-            # print('sign statue code:', r.status_code)
-            # print('sign return:', r.text)
             r.encoding = 'utf-8'
             if r.text.find('成功') >= 0:
                 print(str(user['studentid']) + '·打卡成功')
@@ -277,7 +267,9 @@ def startinuaa(studentid, password):
     user['password'] = password
     if (studentid != '' and password != ''):
         user['cookie'], user['uid'], user['id'] = login(studentid, password)
-        print(dict(user['cookie']))
+        # print("cookie: ", end="")
+        # print(dict(user['cookie']))
+        print(user)
         if ("账户或密码错误" in user['cookie']):
                 return "{{(>_<)}}}，账户或密码错误，呜呜呜。"
         if sign(user):
