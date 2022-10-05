@@ -314,12 +314,12 @@ info: {
                 // dsdecjcsj:"", //倒数第二次核酸检测时间
                 // dsdechsjcjgtype:"", //倒数第二次核酸检测地点
                 // dsdrchsjcdd:"",  //倒数第二次核酸检测地点
-            
+          
                 // dsdechsjcjg:"",  //倒数第二次核酸检测结果
                 // zhyccjcsj:"", //最后一次核酸检测时间
                 // zhycchsjcjgtype:"", //最后一次核酸检测地点
                 // zhycchsjcdd:"",  //最后一次核酸检测地点
-            
+          
                 // zhycchsjcjg:"",  //最后一次核酸检测结果
                 wskmyy:"",//请简要说明无苏康码原因
                 zhycjgdqifjn:"",//7月10日后最后一次经过中高风险区的地区为中国境内还是中国境外
@@ -370,7 +370,7 @@ def login(login_id, login_password):
             r = requests.get(
                 '<https://m.nuaa.edu.cn/uc/wap/login>', cookies=cookies)
             print('get login page:', r.status_code)
-       
+     
             cookies = dict(r.cookies)
             # print(r.cookies)
 
@@ -469,7 +469,7 @@ def sign(user):
             print('sign statue code:', r.status_code)
             print('sign return:', r.text)
             r.encoding = 'utf-8'
-        
+      
             if r.text.find('成功') >= 0:
                 print('打卡成功')
                 return True
@@ -551,6 +551,9 @@ HeroKu 利用 chorme 环境使用 pyppeteer 无头服务器模式获取用户 co
 
 [https://github.com/heroku/heroku-buildpack-google-chrome](https://github.com/heroku/heroku-buildpack-google-chrome)
 
+申请出校页面：
+
+
 # TODO
 
 * [ ] 编写通用 POST 请求
@@ -591,7 +594,7 @@ HeroKu 利用 chorme 环境使用 pyppeteer 无头服务器模式获取用户 co
 
 [notion应用笔记](https://www.zhihu.com/column/c_1389160991083692032)
 
-[](https://blog.csdn.net/xinhuoip/article/details/117036010)
+https://blog.csdn.net/xinhuoip/article/details/117036010
 
 ## 官方实例
 
