@@ -132,6 +132,11 @@ def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学
     context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
     context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
 
+    # 离校申请后再打一次卡
+    context.bot.send_message(chat_id=update.effective_chat.id, text="需要再通过离校申请之后打卡才能变绿码，将自动为您打卡...")
+    result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
+    context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+
 # 小功能
 def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
