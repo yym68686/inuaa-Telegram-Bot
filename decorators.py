@@ -21,7 +21,7 @@ def check_ID(func):
         matches = re.findall(r".{2}\d{7}", args[1].args[0], re.MULTILINE)
         if (len(matches) == 0):
             message = (
-                f"学号格式错误哦\~，请输入合法的学号.\n\n"
+                f"学号格式错误哦\~，请输入合法的学号。\n\n"
                 f"合法学号例如：012010230\n\n"
             )
             args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
