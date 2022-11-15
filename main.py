@@ -105,6 +105,7 @@ def echoinfo(update, context):
     context.bot.send_message(chat_id=admin, text=result)
 
 @decorators.check_inuaa_Number_of_parameters
+@decorators.check_ID
 def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
     context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
     result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
@@ -113,6 +114,7 @@ def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa �
     adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
 
 @decorators.check_check_Number_of_parameters
+@decorators.check_ID
 def check(update: Update, context: CallbackContext): # 添加自动打卡
     message = (
         f"欢迎使用自动打卡功能~\n\n"
@@ -124,6 +126,7 @@ def check(update: Update, context: CallbackContext): # 添加自动打卡
 
 @decorators.check_leave_Number_of_parameters
 @decorators.check_Authorization
+@decorators.check_ID
 @decorators.check_Date_format
 @decorators.check_Date_range
 def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件

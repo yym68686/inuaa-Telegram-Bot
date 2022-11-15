@@ -14,6 +14,21 @@ def check_leave_Number_of_parameters(func):
         return func(*args, **kwargs)
     return wrapper
 
+# 判断学号是否合法
+import re
+def check_ID(func):
+    def wrapper(*args, **kwargs):
+        matches = re.findall(r".{2}\d{7}", args[1].args[0], re.MULTILINE)
+        if (len(matches) == 0):
+            message = (
+                f"学号格式错误哦\~，请输入合法的学号.\n\n"
+                f"合法学号例如：012010230\n\n"
+            )
+            args[1].bot.send_message(chat_id=args[0].effective_chat.id, text=message, parse_mode='MarkdownV2')
+            return
+        return func(*args, **kwargs)
+    return wrapper
+
 # 判断参数是否为两个
 def check_check_Number_of_parameters(func):
     def wrapper(*args, **kwargs):
