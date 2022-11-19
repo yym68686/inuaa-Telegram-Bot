@@ -104,25 +104,38 @@ def echoinfo(update, context):
         return
     context.bot.send_message(chat_id=admin, text=result)
 
-@decorators.check_inuaa_Number_of_parameters
-@decorators.check_ID
-def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
-    context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
-    result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
-    context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
-    context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
-    adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
 
-@decorators.check_check_Number_of_parameters
-@decorators.check_ID
-def check(update: Update, context: CallbackContext): # 添加自动打卡
+def inuaa(update: Update, context: CallbackContext): # 添加自动打卡
     message = (
-        f"欢迎使用自动打卡功能~\n\n"
-        f"将在每日{checktime}打卡\n\n"
-        f"请稍等哦，正在给您的信息添加到数据库~\n\n"
+        f"i南航打卡链接目前无法登陆，机器人打卡功能暂时无法使用，请同学们自行到i南航手动打卡。"
     )
     context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
-    adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
+
+def check(update: Update, context: CallbackContext): # 添加自动打卡
+    message = (
+        f"i南航打卡链接目前无法登陆，机器人打卡功能暂时无法使用，请同学们自行到i南航手动打卡。"
+    )
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+
+# @decorators.check_inuaa_Number_of_parameters
+# @decorators.check_ID
+# def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
+#     context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
+#     result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
+#     context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+#     context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+#     adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
+
+# @decorators.check_check_Number_of_parameters
+# @decorators.check_ID
+# def check(update: Update, context: CallbackContext): # 添加自动打卡
+#     message = (
+#         f"欢迎使用自动打卡功能~\n\n"
+#         f"将在每日{checktime}打卡\n\n"
+#         f"请稍等哦，正在给您的信息添加到数据库~\n\n"
+#     )
+#     context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+#     adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
 
 @decorators.check_leave_Number_of_parameters
 @decorators.check_Authorization
