@@ -153,6 +153,7 @@ def notice(update, context):
         for item in Stuinfo:
             if item["checkdaily"] == "1":
                 updater.bot.send_message(chat_id = int(item["chat_id"]), text=context.args[0])
+                updater.bot.send_message(chat_id = admin, text=item["StuID"] + " 发送成功!")
     if (len(context.args) == 2):
         updater.bot.send_message(chat_id = int(context.args[0]), text=context.args[1])
 
