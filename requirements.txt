@@ -1,0 +1,7 @@
+pytz
+Jinja2
+flask==2.0.3
+schedule==0.6.0
+pyppeteer==0.2.6
+requests==2.27.1
+python-telegram-bot==12.4.2
