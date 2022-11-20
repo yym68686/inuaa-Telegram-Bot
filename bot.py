@@ -1,16 +1,31 @@
+# git add . && git commit -m "add checkformat function" && git push origin $(git rev-parse --abbrev-ref HEAD)
+# heroku logs --tail -a yymtg
 import os
 import sys
 import time
-import logging
-from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update
+import asyncio
+import logging, datetime, pytz
+import schedule
+import NotionDatabase
+import decorators
+from nuaa import startinuaa, GetCookie
+from leave.LeaveSchool import POSTraw
+from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler, filters
-
-# TOKEN = os.getenv("TOKEN") # 从环境变量自动获取telegram bot Token
-TOKEN = "5569497961:AAHobhUuydAwD8SPkXZiVFybvZJOmGrST_w"
-PORT = int(os.environ.get('PORT', '8443'))
+from config import checktime, ADMIN, DATABASEID
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
+
+def toUTC(t):
+    t2 = int(t[:2])
+    if t2 - 8 < 0:
+        t2 += 24
+    t2 -= 8
+    t = str(t2) + t[2:]
+    if len(t) == 4:
+        t = "0" + t
+    return t
 
 # In all other places characters
 # _ * [ ] ( ) ~ ` > # + - = | { } . ! 
@@ -23,8 +38,108 @@ def start(update, context): # 当用户输入/start时，返回文本
     )
     message = (
         "我是人见人爱的yym的小跟班\~\n\n"
+        f"1\. 我可以为你在每天 {checktime} 自动打卡\n"
+        "• 输入 `/check ID password` 发给我就行啦\n"
+        "• 这个功能会存密码，所以如果介意的话可以使用功能2\n\n"
+        "2\. 你也可以手动打卡，记得每天发一句 `/inuaa ID password` 发给我哦\~\n"
+        "• 这个功能不会存密码\n\n"
+        "3\. 好的大学没有围墙！\n"
+        "• 2022\.9\.3 新增功能一条命令自动申请出校，自助申请，自己审批，再也不需要辅导员啦！\n"
+        "• 自动审批出校功能需要定制，请联系 @yym68686，输入 `/leave` 查看命令格式\~\n"
+        "• 此功能不存储密码，后续考虑连接数据库\n\n"
+        "4\. 欢迎访问 https://github\.com/yym68686/inuaa\-Telegram\-Bot 查看源码\n\n"
+        "5\. 有 bug 可以联系 @yym68686"
     )
     update.message.reply_text(message, parse_mode='MarkdownV2')
+
+def adddata(person, context, StuID, password, cookie, checkdaily, chatid):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if (StuID == item["StuID"] and checkdaily == item["checkdaily"]):
+            # context.bot.send_message(chat_id=person, text= StuID + "账号已添加到数据库，不需要重复添加") # 打卡结果打印
+            return
+    body = {
+        'properties':{}
+    }
+    body = NotionDatabase.body_properties_input(body, 'StuID', 'title', StuID)
+    body = NotionDatabase.body_properties_input(body, 'password', 'rich_text', password)
+    body = NotionDatabase.body_properties_input(body, 'cookie', 'rich_text', cookie)
+    body = NotionDatabase.body_properties_input(body, 'checkdaily', 'rich_text', checkdaily)
+    body = NotionDatabase.body_properties_input(body, 'chat_id', 'rich_text', str(chatid))
+    # body = NotionDatabase.body_properties_input(body, 'lastdate', 'rich_text', enddate)
+    result = NotionDatabase.DataBase_additem(DATABASEID, body, StuID)
+    if (person == admin):
+        result = "用户更新：" + result
+    context.bot.send_message(chat_id=person, text=result) # 打卡结果打印
+
+def dailysign():
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    for item in Stuinfo:
+        if item["checkdaily"] == "1":
+            if int(item["chat_id"]) != admin:
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text="自动打卡开始啦，请稍等哦，大约20秒就好啦~")
+            result = startinuaa(item['StuID'], item['password']) # 调用打卡程序
+            if int(item["chat_id"]) != admin:
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text=result) # 打卡结果打印
+            updater.bot.send_message(chat_id = admin, text=item['StuID'] + result) # 打卡结果打印
+
+def daily(update, context):
+    dailysign()
+
+@decorators.Authorization
+def echoinfo(update, context):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    result = ""
+    for item in Stuinfo:
+        result += "%-10s %s" % (item["StuID"], item["password"])  + "\n"
+    if (update.effective_chat.id != admin):
+        return
+    context.bot.send_message(chat_id=admin, text=result)
+
+
+def inuaa(update: Update, context: CallbackContext): # 添加自动打卡
+    message = (
+        f"i南航打卡链接目前无法登陆，机器人打卡功能暂时无法使用，请同学们自行到i南航手动打卡。"
+    )
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+
+def check(update: Update, context: CallbackContext): # 添加自动打卡
+    message = (
+        f"i南航打卡链接目前无法登陆，机器人打卡功能暂时无法使用，请同学们自行到i南航手动打卡。"
+    )
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+
+# @decorators.check_inuaa_Number_of_parameters
+# @decorators.check_ID
+# def inuaa(update: Update, context: CallbackContext): # 当用户输入 /inuaa 学号，密码 时，自动打卡，调用nuaa.py文件
+#     context.bot.send_message(chat_id=update.effective_chat.id, text="请稍等哦，大约20秒就好啦~")
+#     result = startinuaa(context.args[0], context.args[1]) # 调用打卡程序
+#     context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+#     context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+#     adddata(admin, context, context.args[0], "*", "**", '0', update.effective_chat.id)
+
+# @decorators.check_check_Number_of_parameters
+# @decorators.check_ID
+# def check(update: Update, context: CallbackContext): # 添加自动打卡
+#     message = (
+#         f"欢迎使用自动打卡功能~\n\n"
+#         f"将在每日{checktime}打卡\n\n"
+#         f"请稍等哦，正在给您的信息添加到数据库~\n\n"
+#     )
+#     context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode=ParseMode.HTML)
+#     adddata(update.effective_chat.id, context, context.args[0], context.args[1], "**", '1', update.effective_chat.id)
+
+@decorators.check_leave_Number_of_parameters
+@decorators.check_Authorization
+@decorators.check_ID
+@decorators.check_Date_format
+@decorators.check_Date_range
+def leave(update: Update, context: CallbackContext): # 当用户输入/leave 学号，密码 出校日期时，自动申请出校，调用LeaveSchool.py文件
+    context.bot.send_message(chat_id=update.effective_chat.id, text="正在申请出校...大约需要 40 秒，审批通过后用 /inuaa 命令打卡，才能变绿码，也可以手动在i南航打卡哦。")
+    result = POSTraw(context.args[0], context.args[1], context.args[2]) # 调用出校程序
+    context.bot.send_message(chat_id=update.effective_chat.id, text=result) # 打卡结果打印
+    context.bot.send_message(chat_id=admin, text=context.args[0] + result) # 打卡结果打印
+
 
 # 小功能
 def error(update, context):
@@ -36,30 +151,61 @@ def error(update, context):
         )
         context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='MarkdownV2')
 
+@decorators.Authorization
+def notice(update, context):
+    Stuinfo = NotionDatabase.datafresh(NotionDatabase.DataBase_item_query(DATABASEID))
+    if (len(context.args) == 1):
+        for item in Stuinfo:
+            if item["checkdaily"] == "1":
+                updater.bot.send_message(chat_id = int(item["chat_id"]), text=context.args[0])
+                updater.bot.send_message(chat_id = admin, text=item["StuID"] + " 发送成功!")
+    if (len(context.args) == 2):
+        updater.bot.send_message(chat_id = int(context.args[0]), text=context.args[1])
 
 def echo(update, context):
-    # updater.bot.send_message(chat_id = update.effective_chat.id, text= str(update.effective_chat.id) + " " + update.message.text)
-    update.message.reply_text(update.message.text)
+    updater.bot.send_message(chat_id = admin, text= str(update.effective_chat.id) + " " + update.message.text)
+    # update.message.reply_text(update.message.text)
 
 def unknown(update: Update, context: CallbackContext): # 当用户输入未知命令时，返回文本
     context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
 
-if __name__ == '__main__':
-    # updater = Updater(TOKEN, use_context=True)
-    updater = Updater(TOKEN, use_context=True, request_kwargs={
-        'proxy_url': 'http://127.0.0.1:6152' # 需要代理才能使用 telegram
-    })
+def setup(token):
+    if MODE == "dev": # 本地调试，需要挂代理，这里使用的是 surge
+        updater = Updater(token, use_context=True, request_kwargs={
+            'proxy_url': 'http://127.0.0.1:6152' # 需要代理才能使用 telegram
+        })
+    elif MODE == "prod": # 生产服务器在美国，不需要代理
+        updater = Updater(TOKEN, use_context=True)
+    else:
+        logger.error("需要设置 MODE!")
+        sys.exit(1)
 
     dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("start", start))
+
+    # inuaa 相关功能
+    dispatcher.add_handler(CommandHandler("inuaa", inuaa)) # 当用户输入/inuaa时，调用inuaa()函数
+    dispatcher.add_handler(CommandHandler("check", check))
+    dispatcher.add_handler(CommandHandler("echoinfo", echoinfo))
+    dispatcher.add_handler(CommandHandler("dailysign", daily))
+    dispatcher.add_handler(CommandHandler("leave", leave))
 
     # 其他小功能
-    dispatcher.add_handler(CommandHandler("echo", echo))
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("notice", notice))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
     dispatcher.add_error_handler(error)
 
-    # updater.start_polling()
-    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    updater.bot.set_webhook("https://bot.yym68686.top/{}".format(TOKEN))
-    updater.idle()
+    return updater, dispatcher
+
+    # if MODE == "dev": # 本地调试
+    #     updater.start_polling()
+    # elif MODE == "prod": # HeroKu 远程生产环境
+    #     updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+    #     updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
+
+    # schedule.every().day.at(toUTC(checktime)).do(dailysign)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
+    # updater.idle()
