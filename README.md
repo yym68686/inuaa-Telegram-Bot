@@ -12,7 +12,7 @@
 
 好的大学没有围墙！
 
-使用机器人，在 telegram 搜索 [@yym68686bot](tg://resolve?domain=yym68686bot)
+在 telegram 搜索 [@yym68686bot](tg://resolve?domain=yym68686bot) 使用机器人。
 
 轻量级数据库，不考虑性能，直接用 Notion 的 Database 做了数据库
 
@@ -26,13 +26,47 @@
 
 ## Docker
 
+sh
+
+```bash
+#!/bin/bash
+git clone https://github.com/yym68686/inuaa-Telegram-Bot.git
+cd inuaa-Telegram-Bot
+touch /home/log
+nohup python -u /home/inuaa-Telegram-Bot/webhook.py >> /home/log 2>&1 &
+tail -f /home/log
+```
+
 dockerfile
 
-```
+```dockerfile
+FROM ubuntu:20.04
+WORKDIR /home
+RUN apt-get update && apt -y install git
 
 ```
 
+构建
 
+```bash
+docker build --network=host -t bot:1.0 .
+```
+
+运行
+
+```bash
+
+```
+
+关闭所有容器
+
+```bash
+docker rm -f $(docker ps -aq)
+```
+
+- buster:Debian 10
+- stretch:Debian 9
+- jessie:Debian 8
 
 ## References
 

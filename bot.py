@@ -12,7 +12,7 @@ from nuaa import startinuaa, GetCookie
 from leave.LeaveSchool import POSTraw
 from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, Update, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler, filters
-from config import checktime, ADMIN, DATABASEID
+from config import checktime, ADMIN, DATABASEID, MODE
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
