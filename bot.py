@@ -175,7 +175,7 @@ def setup(token):
             'proxy_url': 'http://127.0.0.1:6152' # 需要代理才能使用 telegram
         })
     elif MODE == "prod": # 生产服务器在美国，不需要代理
-        updater = Updater(TOKEN, use_context=True)
+        updater = Updater(token, use_context=True)
     else:
         logger.error("需要设置 MODE!")
         sys.exit(1)
