@@ -1,7 +1,8 @@
 name: inuaa
 on:
   schedule:
-  - cron:  '11 3 * * *'
+  # 六点半
+  - cron:  '0 22 * * *'
   # - cron:  '0 0 * * *'
   workflow_dispatch:
 
