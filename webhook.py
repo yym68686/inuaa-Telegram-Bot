@@ -27,4 +27,4 @@ def set_webhook():
 
 if __name__ == '__main__':
     print(set_webhook())
-    app.run(host='127.0.0.1', port=PORT, debug=True)
+    app.run(host='127.0.0.1', port=PORT, debug=False)
