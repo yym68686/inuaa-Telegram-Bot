@@ -28,5 +28,5 @@ def set_webhook():
 if __name__ == '__main__':
     print(set_webhook())
     from waitress import serve
-    serve(app, host="127.0.0.1", port=8080)
+    serve(app, host="0.0.0.0", port=8080)
     # app.run(host='127.0.0.1', port=PORT, debug=False)
