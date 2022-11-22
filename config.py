@@ -1,5 +1,5 @@
 import os
-ADMIN = 917527833
+admin = 917527833
 checktime = '06:30'
 MODE = os.getenv("MODE")
 URL = os.environ["URL"]
