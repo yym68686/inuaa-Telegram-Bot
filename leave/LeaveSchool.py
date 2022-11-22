@@ -19,7 +19,7 @@ async def getJSESSIONID(username, password):
         # 'handleSIGHUP': False,
         'headless': True,
         # fix bug: HeroKu Browser closed unexpectedly link:https://stackoverflow.com/a/70074296
-        'args': ['--no-sandbox', '--disable-setuid-sandbox']
+        'args': ['--no-sandbox', '--disable-setuid-sandbox', '--single-process']
     })
     page = await browser.newPage()
     print(11111)
