@@ -14,15 +14,14 @@ async def getJSESSIONID(username, password):
     # browser = await launch(headless=False, args=['--disable-infobars'])
     # 加上三个参数，否则报错：signal only works in main thread of the main interpreter 参考链接：https://stackoverflow.com/questions/53679905/running-pypupeteer-in-flask-gives-valueerror-signal-only-works-in-main-thread
     browser = await launch({
-        # 'handleSIGINT':False,
-        # 'handleSIGTERM': False,
-        # 'handleSIGHUP': False,
+        'handleSIGINT':False,
+        'handleSIGTERM': False,
+        'handleSIGHUP': False,
         'headless': True,
         # fix bug: HeroKu Browser closed unexpectedly link:https://stackoverflow.com/a/70074296
         'args': ['--no-sandbox', '--disable-setuid-sandbox', '--single-process']
     })
     page = await browser.newPage()
-    print(11111)
     # 绕过 WebDriver 的检测，在每次加载网页的时候执行语句，执行将 WebDriver 隐藏的命令
     await page.evaluateOnNewDocument('Object.defineProperty(navigator, "webdriver", {get: () => undefined})')
     # 设置页面视图大小
