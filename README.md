@@ -68,6 +68,11 @@ docker rm -f $(docker ps -aq)
 - stretch:Debian 9
 - jessie:Debian 8
 
+```python
+from pyppeteer.launcher import Launcher
+' '.join(Launcher().cmd)
+```
+
 ## References
 
 [python-telegram-bot v13 webhook 文档](https://github.com/python-telegram-bot/v13.x-wiki/wiki/Webhooks)
@@ -81,4 +86,3 @@ docker rm -f $(docker ps -aq)
 - 添加 telegram bot token 作为 BOT_TOKEN 变量
 - 把 notion 的 token 作为 NotionToken 变量
 - 数据库的 pageid 作为 DATABASEID 变量
-
