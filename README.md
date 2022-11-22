@@ -48,7 +48,7 @@ EXPOSE 8080
 COPY ./setup.sh /
 COPY ./requirements.txt /
 RUN apt-get update && apt -y install git \
-    # ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils \
+    ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils \
     && rm -rf /var/lib/apt/lists/* \
     && pip install -r /requirements.txt \
     && pyppeteer-install
@@ -73,29 +73,27 @@ docker exec -it $(docker run -p 8080:8080 -dit \
 bot:1.0) bash
 ```
 
+- 添加 telegram bot token 作为 BOT_TOKEN 变量
+- 把 notion 的 token 作为 NotionToken 变量
+- Notion database 数据库的 pageid 作为 DATABASEID 变量
+- URL 是 bot 的 webhook 地址
+- MODE 设置生产环境 prod
+
 关闭所有容器
 
 ```bash
 docker rm -f $(docker ps -aq)
 ```
 
-
+查看 pyppeteer 日志
 
 ```python
 from pyppeteer.launcher import Launcher
 ' '.join(Launcher().cmd)
 ```
 
+把输出的命令放到终端里。
+
 ## References
 
-[python-telegram-bot v13 webhook 文档](https://github.com/python-telegram-bot/v13.x-wiki/wiki/Webhooks)
-
-[python-telegram-bot Transition guide to Version 12.0](https://github.com/python-telegram-bot/python-telegram-bot/wiki/Transition-guide-to-Version-12.0#handler-callbacks)
-
-[Telegram Bot API](https://core.telegram.org/bots/api)
-
-## Steps
-
-- 添加 telegram bot token 作为 BOT_TOKEN 变量
-- 把 notion 的 token 作为 NotionToken 变量
-- 数据库的 pageid 作为 DATABASEID 变量
+[修复 Failed to parse the contents of /proc/self/maps](Failed to parse the contents of /proc/self/maps)
