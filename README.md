@@ -96,4 +96,4 @@ from pyppeteer.launcher import Launcher
 
 ## References
 
-[修复 Failed to parse the contents of /proc/self/maps](Failed to parse the contents of /proc/self/maps)
+[修复 Failed to parse the contents of /proc/self/maps](https://github.com/puppeteer/puppeteer/issues/7746)
