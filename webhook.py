@@ -1,7 +1,7 @@
 import telegram
 from bot import setup
 from config import BOT_TOKEN, URL, PORT
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 updater, dispatcher = setup(BOT_TOKEN)
@@ -15,7 +15,7 @@ def respond():
     # retrieve the message in JSON and then transform it to Telegram object
     update = telegram.Update.de_json(request.get_json(force=True), updater.bot)
     dispatcher.process_update(update)
-    return 'ok'
+    return jsonify({"status": "ok"})
 
 @app.route('/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
